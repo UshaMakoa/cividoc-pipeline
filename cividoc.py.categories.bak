@@ -1,0 +1,2607 @@
+#!/usr/bin/env python3
+"""Pipeline unique de préparation de la documentation utilisateur CiviCRM."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import posixpath
+from html import escape, unescape
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import time
+from dataclasses import dataclass
+from pathlib import Path, PurePosixPath
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+
+import yaml
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    def load_dotenv(*args: Any, **kwargs: Any) -> bool:
+        return False
+
+OFFICIAL_REPO = "https://lab.civicrm.org/documentation/docs/user-en.git"
+DEFAULT_WORKSPACE = ".cividoc"
+DEFAULT_OUTPUT = "generated-user-en"
+ALLOWED_CATEGORIES = {"tutorial", "guide", "reference", "explanation"}
+ALLOWED_LEVELS = {"basic", "intermediate", "advanced"}
+PART_RE = re.compile(r"-part(\d+)\.md$", re.IGNORECASE)
+
+MAX_NAV_ITEMS_PER_SECTION = 7
+
+DIATAXIS_INDEX_DIR = "categories"
+
+DIATAXIS_TYPES: Dict[str, Dict[str, str]] = {
+    "tutorial": {
+        "slug": "tutorial",
+        "label": "Tutorials",
+        "description": (
+            "Learn CiviCRM through guided, practical lessons. "
+            "Start here when discovering a feature or workflow."
+        ),
+        "empty": "No tutorials are available yet.",
+    },
+    "guide": {
+        "slug": "how-to",
+        "label": "How-to Guides",
+        "description": (
+            "Complete a specific task in CiviCRM. "
+            "Use these guides when you know your goal."
+        ),
+        "empty": "No how-to guides are available yet.",
+    },
+    "explanation": {
+        "slug": "explanation",
+        "label": "Explanation",
+        "description": (
+            "Understand CiviCRM concepts, relationships and design choices."
+        ),
+        "empty": "No explanation pages are available yet.",
+    },
+    "reference": {
+        "slug": "reference",
+        "label": "Reference",
+        "description": (
+            "Look up fields, settings, options and product behaviour."
+        ),
+        "empty": "No reference pages are available yet.",
+    },
+}
+
+PROMPT_VERSION = "diataxis-v2"
+
+REWRITE_PROMPT = r"""
+You are editing the official CiviCRM User Guide for people working in
+non-profit organisations. Many readers are not technical experts.
+
+Rewrite the supplied Markdown so that each output page serves one clear
+user need according to the Diátaxis framework.
+
+SOURCE RULES
+
+- Treat the supplied Markdown as the source of truth.
+- Preserve every fact supported by the source.
+- Preserve CiviCRM product names, interface labels, configuration values,
+  warnings, examples, image references, tables, code blocks, placeholders,
+  tokens and valid Markdown link targets.
+- Do not invent CiviCRM behaviour, prerequisites, interface labels,
+  troubleshooting advice or links.
+- Do not remove important limitations or warnings.
+- Do not browse for unrelated information.
+- If the source is unclear, retain the uncertainty instead of guessing.
+
+DIÁTAXIS CLASSIFICATION
+
+Choose exactly one category for each output page:
+
+1. Tutorial
+   - Serves a reader who is learning.
+   - Provides a safe, guided and complete learning experience.
+   - Introduces one achievable learning outcome.
+   - Uses small sequential steps.
+   - States the observable result after important steps.
+   - Provides only the explanation required to complete the lesson.
+   - Does not assume that the reader already knows the workflow.
+
+2. Guide
+   - Helps a reader complete one real-world task.
+   - Starts with a clear practical goal.
+   - Assumes basic familiarity with CiviCRM.
+   - Uses direct actions in a logical sequence.
+   - Includes prerequisites only when necessary.
+   - Keeps background explanation short.
+   - Links to reference or explanation content instead of embedding
+     long conceptual digressions.
+
+3. Reference
+   - Helps a reader find accurate information while working.
+   - Describes fields, options, settings, statuses, permissions,
+     behaviours or other product details systematically.
+   - Uses concise sections, tables and lists where useful.
+   - Mirrors the structure and terminology of CiviCRM.
+   - Does not turn factual descriptions into a tutorial.
+   - Includes short examples only when they clarify a fact.
+
+4. Explanation
+   - Helps a reader understand a concept.
+   - Explains why something exists, how concepts relate, and what the
+     implications or trade-offs are.
+   - Uses concrete examples when supported by the source.
+   - Does not present a task as a numbered procedure.
+   - Links to task-oriented guides where appropriate.
+
+SPLITTING MIXED CONTENT
+
+Split the source only when it contains substantial content serving
+different user needs.
+
+Examples:
+
+- Separate a long procedure from a long conceptual explanation.
+- Separate exhaustive field descriptions from a task-oriented guide.
+- Separate a beginner learning sequence from instructions intended for
+  an already-competent user.
+
+Use this exact marker between complete output pages:
+
+=== NEW PAGE ===
+
+Every split page must:
+
+- stand on its own;
+- have exactly one Diátaxis category;
+- have its own YAML front matter;
+- have one H1;
+- avoid duplicating content from another split page;
+- preserve relevant source links;
+- use a descriptive title rather than "Suggestion", "Part 1" or "Part 2".
+
+Do not split merely because the source is long. Split only when doing so
+creates pages with clearer and different purposes.
+
+FRONT MATTER
+
+Every output page must start at its first character with exactly this
+YAML structure:
+
+---
+categories:
+  - <Tutorial|Guide|Reference|Explanation>
+level: <Basic|Intermediate|Advanced>
+summary: <one clear sentence describing the page's benefit>
+section: <logical CiviCRM section>
+---
+
+Do not put a source URL, title, blank line, comment or any other text
+before the opening `---`.
+
+PAGE OPENING
+
+Immediately after the front matter:
+
+- add exactly one H1;
+- open with one short paragraph explaining what the reader will learn,
+  accomplish, look up or understand;
+- do not repeat the title;
+- do not add a generic welcome or unnecessary overview.
+
+WRITING STYLE
+
+- Write in plain, inclusive and professional English.
+- Prefer "you" and "your organisation".
+- Use sentence case for headings.
+- Keep headings short, specific and meaningful.
+- Keep paragraphs short, normally two to four sentences.
+- Prefer common words and active voice.
+- Use one action per procedural step.
+- Put warnings before the action that could cause a problem.
+- Avoid filler, repetition, marketing language and unnecessary conclusions.
+- Do not add a summary section merely to repeat the page.
+- Do not use a horizontal rule in the body.
+- Do not wrap the answer in a fenced code block.
+- Keep Markdown valid.
+- Preserve useful links; do not invent link targets.
+- Use numbered lists only for sequences where order matters.
+- Use bullet lists for unordered options or facts.
+- Never use HTML for ordinary page content.
+
+LEGACY ANCHOR COMPATIBILITY
+
+- Preserve every existing explicit heading ID.
+- Preserve the generated MkDocs anchor of every source heading.
+- If you rename a source heading, insert its old anchor immediately
+  before the rewritten heading, using this exact form:
+
+  <a id="old-heading-anchor"></a>
+
+  ## Rewritten heading
+
+- If the document is split, put the legacy anchor in the output page
+  that contains the corresponding source content.
+- Do not place every legacy anchor at the beginning of the first page.
+- Never reuse the same anchor in two output pages.
+
+SOURCE COMMENT
+
+End every output page with exactly one hidden HTML comment:
+
+<!-- Source: <source path> -->
+
+If classification is genuinely uncertain, add one additional hidden
+comment immediately before the source comment:
+
+<!-- Diátaxis review: <brief reason for uncertainty> -->
+
+Return only the rewritten Markdown.
+""".strip()
+
+
+@dataclass
+class Paths:
+    root: Path
+    upstream: Path
+    rewritten: Path
+    state: Path
+    reports: Path
+    site: Path
+
+
+def run_command(command: Sequence[str], cwd: Optional[Path] = None, check: bool = True) -> subprocess.CompletedProcess:
+    print("$", " ".join(command))
+    return subprocess.run(list(command), cwd=str(cwd) if cwd else None, check=check, text=True)
+
+
+def require_program(name: str) -> None:
+    if shutil.which(name) is None:
+        raise RuntimeError(f"Programme requis introuvable dans PATH : {name}")
+
+
+def sync_repository(url: str, destination: Path, ref: Optional[str] = None) -> None:
+    require_program("git")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if (destination / ".git").is_dir():
+        run_command(["git", "fetch", "--prune", "origin"], destination)
+        if ref:
+            run_command(["git", "checkout", ref], destination)
+            run_command(["git", "pull", "--ff-only", "origin", ref], destination)
+        else:
+            run_command(["git", "pull", "--ff-only"], destination)
+    elif destination.exists():
+        raise RuntimeError(f"{destination} existe mais n'est pas un dépôt Git.")
+    else:
+        command = ["git", "clone", "--depth", "1"]
+        if ref:
+            command.extend(["--branch", ref])
+        command.extend([url, str(destination)])
+        run_command(command)
+
+
+def copy_official_site(upstream: Path, site: Path) -> None:
+    if site.exists():
+        shutil.rmtree(site)
+    shutil.copytree(upstream, site, ignore=shutil.ignore_patterns(".git", "site", "__pycache__"))
+
+
+def iter_markdown(folder: Path) -> Iterable[Path]:
+    if folder.exists():
+        yield from sorted(folder.rglob("*.md"))
+
+
+def selected(relative_path: str, includes: List[str], excludes: List[str]) -> bool:
+    normalized = relative_path.replace("\\", "/").strip("/")
+    if includes and not any(normalized == x or normalized.startswith(x.rstrip("/") + "/") for x in includes):
+        return False
+    return not any(normalized == x or normalized.startswith(x.rstrip("/") + "/") for x in excludes)
+
+
+def load_json(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def save_json(path: Path, value: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def strip_outer_fence(text: str) -> str:
+    text = text.strip().lstrip("\ufeff")
+    match = re.fullmatch(r"```(?:markdown|md)?\s*\n([\s\S]*?)\n```", text, flags=re.IGNORECASE)
+    return match.group(1).strip() if match else text
+
+
+def call_ai(
+    markdown: str,
+    source_path: str,
+    provider: str,
+    model: str,
+    retries: int,
+    preset: str,
+) -> str:
+    prompt = (
+        f"{REWRITE_PROMPT}\n\n"
+        f"SOURCE PATH: {source_path}\n\n"
+        f"SOURCE MARKDOWN:\n{markdown}"
+    )
+
+    for attempt in range(1, retries + 1):
+        try:
+            if provider == "perplexity":
+                try:
+                    from perplexity import Perplexity
+                except ImportError as exc:
+                    raise RuntimeError(
+                        "Le paquet officiel 'perplexityai' est requis. "
+                        "Exécutez : pip install --upgrade perplexityai"
+                    ) from exc
+
+                api_key = os.getenv("PERPLEXITY_API_KEY", "").strip()
+                if not api_key:
+                    raise RuntimeError(
+                        "Variable PERPLEXITY_API_KEY absente. "
+                        "Ajoutez-la dans le fichier .env."
+                    )
+
+                client = Perplexity(
+                    api_key=api_key,
+                    timeout=900.0,
+                    max_retries=0,
+                )
+                response = client.responses.create(
+                    preset=preset,
+                    input=prompt,
+                )
+                if response.status != "completed":
+                    raise RuntimeError(
+                        "Réponse Perplexity non terminée : "
+                        f"{response.status}"
+                    )
+                result = response.output_text or ""
+
+            elif provider == "openai":
+                try:
+                    from openai import OpenAI
+                except ImportError as exc:
+                    raise RuntimeError("Le paquet 'openai' est requis.") from exc
+
+                api_key = os.getenv("OPENAI_API_KEY", "").strip()
+                if not api_key:
+                    raise RuntimeError("Variable OPENAI_API_KEY absente.")
+                if not model:
+                    raise RuntimeError(
+                        "CIVIDOC_MODEL ou --model est requis avec OpenAI."
+                    )
+
+                kwargs: Dict[str, Any] = {
+                    "api_key": api_key,
+                    "timeout": 300.0,
+                }
+                base_url = os.getenv("OPENAI_BASE_URL", "").strip()
+                if base_url:
+                    kwargs["base_url"] = base_url
+
+                client = OpenAI(**kwargs)
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.2,
+                )
+                result = response.choices[0].message.content or ""
+            else:
+                raise RuntimeError(f"Fournisseur inconnu : {provider}")
+
+            if not result.strip():
+                raise RuntimeError("Réponse IA vide")
+            return strip_outer_fence(result)
+
+        except Exception as exc:
+            message = str(exc)
+            lowered = message.lower()
+            if (
+                "401" in message
+                or "unauthorized" in lowered
+                or "authentication" in lowered
+            ):
+                raise RuntimeError(
+                    f"Authentification {provider} refusée. Vérifiez la clé API."
+                ) from exc
+            if (
+                "invalid_model" in lowered
+                or "invalid model" in lowered
+                or "unknown model" in lowered
+                or "invalid preset" in lowered
+            ):
+                raise RuntimeError(
+                    "Configuration IA invalide : "
+                    f"provider={provider}, preset={preset!r}, model={model!r}."
+                ) from exc
+            if attempt == retries:
+                raise RuntimeError(
+                    f"Échec IA après {retries} tentatives pour "
+                    f"{source_path}: {exc}"
+                ) from exc
+            delay = min(60, 2 ** attempt)
+            print(
+                f"⚠️ Appel IA échoué ({attempt}/{retries}); "
+                f"nouvel essai dans {delay}s : {exc}"
+            )
+            time.sleep(delay)
+
+    raise AssertionError("unreachable")
+
+
+def rewrite_documents(
+    paths: Paths,
+    provider: str,
+    model: str,
+    includes: List[str],
+    excludes: List[str],
+    retries: int,
+    limit: int,
+    preset: str,
+    skip_existing_rewrites: bool,
+) -> None:
+    source_root = paths.upstream / "docs"
+    manifest_path = paths.state / "rewrite-manifest.json"
+    manifest = load_json(manifest_path)
+    entries = manifest.setdefault("files", {})
+    paths.rewritten.mkdir(parents=True, exist_ok=True)
+    processed = 0
+
+    for source in iter_markdown(source_root):
+        rel = source.relative_to(source_root).as_posix()
+        if not selected(rel, includes, excludes):
+            continue
+        if limit and processed >= limit:
+            break
+
+        raw = source.read_text(encoding="utf-8-sig")
+        digest_payload = {
+            "prompt_version": PROMPT_VERSION,
+            "prompt": REWRITE_PROMPT,
+            "provider": provider,
+            "model": model,
+            "preset": preset,
+            "source_path": rel,
+            "source": raw,
+        }
+        digest = hashlib.sha256(
+            json.dumps(
+                digest_payload,
+                ensure_ascii=False,
+                sort_keys=True,
+            ).encode("utf-8")
+        ).hexdigest()
+
+        previous = entries.get(rel, {})
+        previous_outputs = previous.get("outputs", [])
+        outputs_exist = bool(previous_outputs) and all(
+            (paths.rewritten / Path(output)).exists()
+            for output in previous_outputs
+        )
+
+        if skip_existing_rewrites and outputs_exist:
+            print(f"⏭️ Réécriture déjà présente, ignorée : {rel}")
+            continue
+        if previous.get("sha256") == digest and outputs_exist:
+            print(f"⏭️ IA inchangée : {rel}")
+            continue
+
+        engine = f"preset={preset}" if provider == "perplexity" else f"model={model}"
+        print(f"🧠 Réécriture : {rel} ({provider}, {engine})")
+        answer = call_ai(raw, rel, provider, model, retries, preset)
+        chunks = [
+            part.strip()
+            for part in re.split(r"(?m)^=== NEW PAGE ===\s*$", answer)
+            if part.strip()
+        ]
+        if not chunks:
+            raise RuntimeError(f"Aucun contenu produit pour {rel}")
+
+        old_outputs = set(previous_outputs)
+        new_outputs: List[str] = []
+        rel_path = PurePosixPath(rel)
+
+        for index, chunk in enumerate(chunks, 1):
+            # La première page garde le chemin Markdown officiel et donc son URL.
+            if index == 1:
+                output_rel = rel
+            else:
+                output_rel = str(
+                    rel_path.with_name(f"{rel_path.stem}-part{index}.md")
+                )
+
+            output = paths.rewritten / Path(output_rel)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_text(chunk.strip() + "\n", encoding="utf-8")
+            new_outputs.append(output_rel)
+            print(f"   💾 {output_rel}")
+
+        for stale in old_outputs - set(new_outputs):
+            stale_path = paths.rewritten / Path(stale)
+            if stale_path.exists():
+                stale_path.unlink()
+
+        entries[rel] = {"sha256": digest, "outputs": new_outputs}
+        save_json(manifest_path, manifest)
+        processed += 1
+
+
+def migrate_first_split_to_official_url(paths: Paths) -> None:
+    """Convertit les anciennes sorties -part1 vers le chemin officiel."""
+    manifest_path = paths.state / "rewrite-manifest.json"
+    manifest = load_json(manifest_path)
+    entries = manifest.get("files", {})
+    if not isinstance(entries, dict):
+        return
+
+    changed = False
+    for source_rel, entry in entries.items():
+        if not isinstance(entry, dict):
+            continue
+        outputs = entry.get("outputs", [])
+        if not isinstance(outputs, list):
+            continue
+
+        source_path = PurePosixPath(source_rel)
+        old_part1 = str(
+            source_path.with_name(f"{source_path.stem}-part1.md")
+        )
+        if old_part1 not in outputs:
+            continue
+
+        old_file = paths.rewritten / Path(old_part1)
+        official_file = paths.rewritten / Path(source_rel)
+        if old_file.exists():
+            official_file.parent.mkdir(parents=True, exist_ok=True)
+            if official_file.exists():
+                official_file.unlink()
+            old_file.replace(official_file)
+
+        entry["outputs"] = [
+            source_rel if output == old_part1 else output
+            for output in outputs
+        ]
+        changed = True
+        print(f"🔗 URL officielle restaurée : {old_part1} → {source_rel}")
+
+    if changed:
+        save_json(manifest_path, manifest)
+
+
+def overlay_rewritten(paths: Paths) -> None:
+    if not paths.rewritten.exists():
+        return
+
+    for rewritten in iter_markdown(paths.rewritten):
+        relative = rewritten.relative_to(paths.rewritten)
+        destination = paths.site / "docs" / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(rewritten, destination)
+        print(f"📝 Page réécrite installée : {relative.as_posix()}")
+
+
+MARKDOWN_LINK_RE = re.compile(
+    r'(?P<prefix>!?\[[^\]]*\]\()'
+    r'(?P<target>[^)\s]+)'
+    r'(?P<suffix>(?:\s+["\'][^"\']*["\'])?\))'
+)
+
+def repair_markdown_targets(
+    docs_root: Path,
+) -> None:
+    """
+    Répare les entités HTML dans les liens, les chemins locaux
+    sans extension et les liens vers les autres guides CiviCRM.
+    """
+    repaired = 0
+
+    for document in iter_markdown(docs_root):
+        relative = document.relative_to(
+            docs_root
+        ).as_posix()
+
+        source_directory = (
+            posixpath.dirname(relative) or "."
+        )
+
+        original = document.read_text(
+            encoding="utf-8-sig"
+        )
+
+        def replace_target(
+            match: re.Match[str],
+        ) -> str:
+            nonlocal repaired
+
+            raw_target = match.group("target")
+            wrapped = (
+                raw_target.startswith("<")
+                and raw_target.endswith(">")
+            )
+
+            target = (
+                raw_target[1:-1]
+                if wrapped
+                else raw_target
+            )
+
+            # Corrige notamment &amp; dans les noms d’images.
+            target = unescape(target)
+
+            if target.startswith((
+                "http://",
+                "https://",
+                "mailto:",
+                "tel:",
+                "data:",
+                "javascript:",
+            )):
+                replacement = target
+            else:
+                path, separator, fragment = (
+                    target.partition("#")
+                )
+
+                replacement_path = path
+
+                if path:
+                    replacement_path = (
+                        posixpath.normpath(
+                            path.replace("\\", "/")
+                        )
+                    )
+
+                    # Les liens entre les différents guides
+                    # CiviCRM sortent de docs_dir. Ils doivent
+                    # être transformés en URL publiques.
+                    cross_guide = re.search(
+                        r"(?:^|/)"
+                        r"(dev|user|sysadmin)"
+                        r"/([a-z]{2})"
+                        r"/([^/]+)"
+                        r"/(.+)$",
+                        replacement_path,
+                        flags=re.IGNORECASE,
+                    )
+
+                    resolved = posixpath.normpath(
+                        posixpath.join(
+                            source_directory,
+                            replacement_path,
+                        )
+                    )
+
+                    if (
+                        resolved.startswith("../")
+                        and cross_guide
+                    ):
+                        replacement_path = (
+                            "https://docs.civicrm.org/"
+                            f"{cross_guide.group(1)}/"
+                            f"{cross_guide.group(2)}/"
+                            f"{cross_guide.group(3)}/"
+                            f"{cross_guide.group(4)}"
+                        )
+
+                    elif not resolved.startswith("../"):
+                        suffix = PurePosixPath(
+                            resolved
+                        ).suffix
+
+                        # Exemple :
+                        # contribution-forms#starter...
+                        if not suffix:
+                            markdown_candidate = (
+                                resolved + ".md"
+                            )
+
+                            index_candidate = (
+                                posixpath.join(
+                                    resolved,
+                                    "index.md",
+                                )
+                            )
+
+                            if (
+                                docs_root
+                                / Path(markdown_candidate)
+                            ).exists():
+                                replacement_path = (
+                                    posixpath.relpath(
+                                        markdown_candidate,
+                                        source_directory,
+                                    )
+                                )
+
+                            elif (
+                                docs_root
+                                / Path(index_candidate)
+                            ).exists():
+                                replacement_path = (
+                                    posixpath.relpath(
+                                        index_candidate,
+                                        source_directory,
+                                    )
+                                )
+
+                replacement = replacement_path
+
+                if separator:
+                    replacement += "#" + fragment
+
+            if wrapped:
+                replacement = f"<{replacement}>"
+
+            if replacement != raw_target:
+                repaired += 1
+                print(
+                    f"🔗 Cible réparée : {relative} : "
+                    f"{raw_target} → {replacement}"
+                )
+
+            return (
+                match.group("prefix")
+                + replacement
+                + match.group("suffix")
+            )
+
+        corrected = MARKDOWN_LINK_RE.sub(
+            replace_target,
+            original,
+        )
+
+        if corrected != original:
+            document.write_text(
+                corrected,
+                encoding="utf-8",
+            )
+
+    print(
+        f"✅ {repaired} cible(s) Markdown réparée(s)"
+    )
+    
+def markdown_heading_ids(path: Path) -> set[str]:
+    if not path.exists():
+        return set()
+
+    try:
+        from markdown.extensions.toc import slugify
+    except ImportError:
+        slugify = None
+
+    _, body = split_front_matter(path.read_text(encoding="utf-8-sig"))
+    identifiers: set[str] = set()
+
+    for match in re.finditer(r"(?m)^#{1,6}\s+(.+?)\s*#*\s*$", body):
+        title = re.sub(
+            r"\[([^]]+)]\([^)]*\)",
+            r"\1",
+            match.group(1),
+        )
+        title = re.sub(r"[*_`]", "", title).strip()
+        if slugify is not None:
+            identifier = slugify(title, "-")
+        else:
+            identifier = re.sub(r"[^\w\s-]", "", title.casefold())
+            identifier = re.sub(r"[\s_-]+", "-", identifier).strip("-")
+        if identifier:
+            identifiers.add(identifier)
+
+    # Les anciennes ancres conservées explicitement.
+    for identifier in re.findall(
+        r"""<[^>]+\bid=["']([^"']+)["'][^>]*>""",
+        body,
+        flags=re.IGNORECASE,
+    ):
+        identifiers.add(
+            unescape(identifier).strip()
+        )
+
+    return identifiers
+
+
+def repair_links_to_split_pages(paths: Paths) -> None:
+    """Redirige une ancre vers la partie qui contient le titre ciblé."""
+    docs_root = paths.site / "docs"
+    manifest = load_json(paths.state / "rewrite-manifest.json")
+    files = manifest.get("files", {})
+    if not isinstance(files, dict):
+        return
+
+    split_pages: Dict[str, List[str]] = {}
+    for source_path, information in files.items():
+        if not isinstance(information, dict):
+            continue
+        outputs = information.get("outputs", [])
+        if not isinstance(outputs, list) or len(outputs) < 2:
+            continue
+        normalized = [
+            str(output).replace("\\", "/")
+            for output in outputs
+            if isinstance(output, str)
+        ]
+        if normalized:
+            split_pages[str(source_path).replace("\\", "/")] = normalized
+
+    if not split_pages:
+        return
+
+    heading_cache: Dict[str, set[str]] = {}
+    repaired_count = 0
+
+    for document in iter_markdown(docs_root):
+        source_relative = document.relative_to(docs_root).as_posix()
+        source_directory = posixpath.dirname(source_relative)
+        original_text = document.read_text(encoding="utf-8-sig")
+
+        def replace_link(match: re.Match[str]) -> str:
+            nonlocal repaired_count
+            target = match.group("target")
+            if "://" in target or target.startswith(
+                ("#", "/", "mailto:", "tel:")
+            ):
+                return match.group(0)
+
+            target_path, separator, fragment = target.partition("#")
+            if not target_path.lower().endswith(".md"):
+                return match.group(0)
+
+            resolved_target = posixpath.normpath(
+                posixpath.join(source_directory, target_path)
+            )
+            outputs = split_pages.get(resolved_target)
+            if not outputs:
+                return match.group(0)
+
+            selected_output = outputs[0]
+            if separator and fragment:
+                requested_anchor = fragment.casefold()
+                for output in outputs:
+                    if output not in heading_cache:
+                        heading_cache[output] = markdown_heading_ids(
+                            docs_root / Path(output)
+                        )
+                    if requested_anchor in {
+                        anchor.casefold()
+                        for anchor in heading_cache[output]
+                    }:
+                        selected_output = output
+                        break
+
+            relative_target = posixpath.relpath(
+                selected_output,
+                source_directory or ".",
+            )
+            replacement = relative_target
+            if separator:
+                replacement += f"#{fragment}"
+
+            if replacement == target:
+                return match.group(0)
+
+            repaired_count += 1
+            print(
+                f"🔗 Lien réparé : {source_relative}: "
+                f"{target} → {replacement}"
+            )
+            return match.group("prefix") + replacement + match.group("suffix")
+
+        repaired_text = MARKDOWN_LINK_RE.sub(replace_link, original_text)
+        if repaired_text != original_text:
+            document.write_text(repaired_text, encoding="utf-8")
+
+    print(
+        f"✅ {repaired_count} lien(s) vers des pages découpées réparé(s)"
+    )
+
+
+def split_front_matter(text: str) -> Tuple[Dict[str, Any], str]:
+    text = text.replace("\r\n", "\n").replace("\r", "\n").lstrip("\ufeff")
+    lines = text.splitlines()
+    start = next((i for i, line in enumerate(lines[:40]) if line.strip() == "---"), None)
+    if start is not None:
+        end = next((i for i in range(start + 1, len(lines)) if lines[i].strip() == "---"), None)
+        if end is not None:
+            raw_meta = "\n".join(lines[start + 1:end])
+            try:
+                loaded = yaml.safe_load(raw_meta) or {}
+                if isinstance(loaded, dict):
+                    return dict(loaded), "\n".join(lines[end + 1:]).lstrip("\n")
+            except yaml.YAMLError:
+                pass
+    return {}, text.lstrip()
+
+
+def infer_summary(body: str) -> str:
+    for line in body.splitlines():
+        candidate = line.strip()
+        if not candidate or candidate.startswith(("#", "<!--", "```", "- ", "* ", "!", ">")):
+            continue
+        candidate = re.sub(r"\[([^]]+)]\([^)]*\)", r"\1", candidate)
+        candidate = re.sub(r"[*_`{}]", "", candidate).strip()
+        if candidate:
+            return candidate[:240].rstrip(" .") + "."
+    return "CiviCRM user documentation page."
+
+
+def normalize_metadata(meta: Dict[str, Any], body: str, rel: str) -> Dict[str, Any]:
+    categories = meta.get("categories", [])
+    if isinstance(categories, str):
+        categories = [categories]
+    normalized_categories = []
+    for category in categories if isinstance(categories, list) else []:
+        value = str(category).strip()
+        if value.lower() in ALLOWED_CATEGORIES:
+            normalized_categories.append(value.capitalize())
+    meta["categories"] = normalized_categories or ["Reference"]
+
+    level = str(meta.get("level", "Basic")).strip().lower()
+    meta["level"] = level.capitalize() if level in ALLOWED_LEVELS else "Basic"
+    summary = str(meta.get("summary", "")).strip()
+    meta["summary"] = summary or infer_summary(body)
+    section = str(meta.get("section", "")).strip()
+    parent = PurePosixPath(rel).parent.name.replace("-", " ").replace("_", " ")
+    meta["section"] = section or (parent[:1].upper() + parent[1:] if parent and parent != "." else "Introduction")
+    return meta
+
+
+def balance_html_comments(text: str) -> str:
+    lines = text.splitlines()
+    output: List[str] = []
+    inside = False
+    for index, line in enumerate(lines):
+        if not inside:
+            line = re.sub(r"(^|\s)-->(?=\s|$)", r"\1", line)
+            if "<!--" in line:
+                after = line.split("<!--", 1)[1]
+                inside = "-->" not in after
+            output.append(line)
+        else:
+            if "-->" in line:
+                output.append(line)
+                inside = False
+            elif not line.strip() and not any("-->" in future for future in lines[index + 1:]):
+                output.append("-->")
+                output.append(line)
+                inside = False
+            else:
+                output.append(line)
+    if inside:
+        output.append("-->")
+    result = "\n".join(output)
+    result = re.sub(r"<!--\s*-->", "", result)
+    result = re.sub(r"(<!--[\s\S]*?-->)\s*", r"\1\n\n", result)
+    return result
+
+
+def normalize_comments(text: str) -> str:
+    text = re.sub(r"(?m)^\s*#\s*comments?\s*:\s*(.*?)\s*$", lambda m: f"<!-- {m.group(1).strip()} -->", text)
+    return balance_html_comments(text)
+
+
+def split_inline_lists(text: str) -> str:
+    lines = text.splitlines()
+    output: List[str] = []
+    fenced = False
+    comment = False
+    ordered_marker = re.compile(r"(?<!\S)(\d+)\.\s+")
+
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            fenced = not fenced
+            output.append(line)
+            continue
+        if "<!--" in line and "-->" not in line.split("<!--", 1)[1]:
+            comment = True
+        if fenced or comment:
+            output.append(line)
+            if comment and "-->" in line:
+                comment = False
+            continue
+        markers = list(ordered_marker.finditer(line))
+        if len(markers) >= 2 or (markers and markers[0].start() > 0):
+            intro = line[:markers[0].start()].rstrip()
+            if intro:
+                output.extend([intro, ""])
+            for pos, marker in enumerate(markers):
+                end = markers[pos + 1].start() if pos + 1 < len(markers) else len(line)
+                item = line[marker.end():end].strip()
+                bullet_parts = re.split(r"\s+-\s+(?=[A-Za-z0-9*`])", item)
+                output.append(f"{marker.group(1)}. {bullet_parts[0].strip()}")
+                for bullet in bullet_parts[1:]:
+                    output.append(f"   - {bullet.strip()}")
+            continue
+        bullet_parts = re.split(r"\s+-\s+(?=[A-Za-z0-9*`])", line)
+        if len(bullet_parts) >= 3 or (len(bullet_parts) == 2 and bullet_parts[0].rstrip().endswith((':', '.'))):
+            intro = bullet_parts[0].rstrip()
+            if intro:
+                output.extend([intro, ""])
+            output.extend(f"- {part.strip()}" for part in bullet_parts[1:] if part.strip())
+            continue
+        output.append(line)
+    return "\n".join(output)
+
+def move_source_comment_to_end(body: str, rel: str) -> str:
+    source_pattern = re.compile(
+        r"(?im)^\s*<!--\s*Source:\s*.*?-->\s*$"
+    )
+
+    matches = source_pattern.findall(body)
+
+    if matches:
+        source_comment = matches[-1].strip()
+        body = source_pattern.sub("", body).strip()
+    else:
+        source_comment = f"<!-- Source: {rel} -->"
+
+    return f"{body}\n\n{source_comment}".strip()
+
+def clean_markdown_file(path: Path, docs_root: Path) -> None:
+    rel = path.relative_to(docs_root).as_posix()
+    raw = path.read_text(encoding="utf-8-sig")
+    meta, body = split_front_matter(raw)
+    body = normalize_comments(body)
+    body = split_inline_lists(body)
+    body = re.sub(r"\[¶\]\([^)]+\)", "", body)
+    body = re.sub(r"(?m)[ \t]+$", "", body)
+    body = re.sub(r"\n{3,}", "\n\n", body).strip()
+    body = move_source_comment_to_end(body, rel)
+    meta = normalize_metadata(meta, body, rel)
+    front = yaml.safe_dump(meta, sort_keys=False, allow_unicode=True, width=120).strip()
+    path.write_text(f"---\n{front}\n---\n\n{body}\n", encoding="utf-8")
+
+
+def clean_all_markdown(docs_root: Path) -> None:
+    for path in iter_markdown(docs_root):
+        clean_markdown_file(path, docs_root)
+
+
+def natural_part_key(path: PurePosixPath) -> int:
+    match = PART_RE.search(path.name)
+    return int(match.group(1)) if match else 0
+
+
+def split_parts_for(md_path: str, docs_root: Path) -> List[str]:
+    posix = PurePosixPath(md_path)
+    directory = docs_root / Path(posix.parent.as_posix())
+    if not directory.exists():
+        return []
+    candidates = []
+    for candidate in directory.glob(f"{posix.stem}-part*.md"):
+        rel = candidate.relative_to(docs_root).as_posix()
+        if PART_RE.search(candidate.name):
+            candidates.append(rel)
+    return sorted(candidates, key=lambda value: natural_part_key(PurePosixPath(value)))
+
+
+def page_title(path: str, docs_root: Path, fallback: str) -> str:
+    file_path = docs_root / Path(path)
+    if file_path.exists():
+        _, body = split_front_matter(file_path.read_text(encoding="utf-8-sig"))
+        match = re.search(r"(?m)^#\s+(.+?)\s*$", body)
+        if match:
+            return re.sub(r"\s+#+$", "", match.group(1)).strip()
+    part = natural_part_key(PurePosixPath(path))
+    return f"{fallback} — part {part}" if part else fallback
+
+
+def expand_path(title: Optional[str], md_path: str, docs_root: Path) -> List[Any]:
+    paths: List[str] = []
+
+    # La première sortie réécrite conserve le chemin officiel.
+    if (docs_root / Path(md_path)).exists():
+        paths.append(md_path)
+
+    # Les sorties supplémentaires restent juste après la page officielle.
+    for part in split_parts_for(md_path, docs_root):
+        if part not in paths:
+            paths.append(part)
+
+    if not paths:
+        print(f"⚠️ Nav : fichier absent retiré : {md_path}")
+        return []
+
+    expanded: List[Any] = []
+    for index, path in enumerate(paths):
+        fallback = str(title) if title is not None else PurePosixPath(md_path).stem
+        rewritten_title = page_title(path, docs_root, fallback)
+
+        if title is None:
+            expanded.append({rewritten_title: path})
+        else:
+            expanded.append({rewritten_title: path})
+
+    if len(paths) > 1:
+        print(f"🔀 Nav : {md_path} développé en {len(paths)} page(s)")
+    return expanded
+
+def transform_nav(nav: Any, docs_root: Path) -> List[Any]:
+    if not isinstance(nav, list):
+        raise RuntimeError("La clé nav du mkdocs.yml officiel doit être une liste.")
+    result: List[Any] = []
+    for item in nav:
+        if isinstance(item, str):
+            result.extend(expand_path(None, item, docs_root) if item.endswith(".md") else [item])
+        elif isinstance(item, dict):
+            for title, value in item.items():
+                if isinstance(value, str) and value.endswith(".md"):
+                    result.extend(expand_path(str(title), value, docs_root))
+                elif isinstance(value, list):
+                    children = transform_nav(value, docs_root)
+                    if children:
+                        result.append({title: children})
+                else:
+                    result.append({title: value})
+        else:
+            result.append(item)
+    return result
+
+
+def collect_nav_paths(nav: Any) -> List[str]:
+    found: List[str] = []
+    if isinstance(nav, list):
+        for item in nav:
+            found.extend(collect_nav_paths(item))
+    elif isinstance(nav, dict):
+        for value in nav.values():
+            found.extend(collect_nav_paths(value))
+    elif isinstance(nav, str) and nav.endswith(".md"):
+        found.append(nav)
+    return found
+
+def markdown_title(body: str, fallback: str) -> str:
+    match = re.search(r"(?m)^#\s+(.+?)\s*$", body)
+
+    if not match:
+        return fallback
+
+    return re.sub(r"\s+#+$", "", match.group(1)).strip()
+
+
+def escape_markdown_label(value: str) -> str:
+    return (
+        value
+        .replace("\\", "\\\\")
+        .replace("[", "\\[")
+        .replace("]", "\\]")
+    )
+
+
+def navigation_section(
+    metadata: Dict[str, Any],
+    relative: PurePosixPath,
+) -> str:
+    section = str(metadata.get("section", "")).strip()
+    if section:
+        return section
+    if len(relative.parts) > 1:
+        return (
+            relative.parts[0]
+            .replace("-", " ")
+            .replace("_", " ")
+            .strip()
+            .title()
+        )
+    return "Introduction"
+
+
+def build_simplified_navigation(docs_root: Path) -> List[Any]:
+    """Construit la nav depuis les titres H1 sans déplacer les fichiers."""
+    pages_by_section: Dict[str, List[Dict[str, str]]] = {}
+
+    for page in iter_markdown(docs_root):
+        relative = page.relative_to(docs_root)
+        relative_path = relative.as_posix()
+        if relative_path == "index.md":
+            continue
+        if relative.parts and relative.parts[0] == DIATAXIS_INDEX_DIR:
+            continue
+
+        metadata, body = split_front_matter(
+            page.read_text(encoding="utf-8-sig")
+        )
+        if metadata.get("generated_diataxis_index"):
+            continue
+
+        fallback_title = (
+            page.stem.replace("-", " ").replace("_", " ").strip().capitalize()
+        )
+        title = markdown_title(body, fallback_title)
+        section = navigation_section(metadata, relative)
+        pages_by_section.setdefault(section, []).append({
+            "title": title,
+            "path": relative_path,
+            "is_index": "0" if page.name.lower() == "index.md" else "1",
+        })
+
+    user_guide_navigation: List[Any] = []
+    for section in sorted(pages_by_section, key=str.casefold):
+        pages = pages_by_section[section]
+        pages.sort(key=lambda item: (
+            item["is_index"],
+            item["title"].casefold(),
+            item["path"].casefold(),
+        ))
+        user_guide_navigation.append({
+            section: [{page["title"]: page["path"]} for page in pages]
+        })
+
+    return [
+        {"Home": "index.md"},
+        *user_guide_navigation,
+    ]
+
+def chunk_navigation_items(
+    items: List[Any],
+    chunk_size: int = MAX_NAV_ITEMS_PER_SECTION - 2,
+) -> List[List[Any]]:
+    return [
+        items[index:index + chunk_size]
+        for index in range(0, len(items), chunk_size)
+    ]
+
+
+def auto_split_large_nav_sections(
+    nav: List[Any],
+) -> List[Any]:
+    def split_node(
+        title: str,
+        children: List[Any],
+    ) -> Dict[str, Any]:
+        if len(children) <= MAX_NAV_ITEMS_PER_SECTION:
+            return {title: children}
+
+        groups = chunk_navigation_items(children)
+        grouped_children: List[Any] = []
+        total = len(groups)
+
+        for index, group in enumerate(groups, 1):
+            if index == 1:
+                label = "Overview and essentials"
+            elif index == total:
+                label = "Advanced and related topics"
+            else:
+                label = f"More {title.lower()} tasks"
+
+            grouped_children.append({
+                label: group
+            })
+
+        return {title: grouped_children}
+
+    output: List[Any] = []
+
+    for item in nav:
+        if isinstance(item, dict) and item:
+            title, value = next(iter(item.items()))
+
+            if isinstance(value, list):
+                rebuilt_children = auto_split_large_nav_sections(value)
+
+                if len(rebuilt_children) > MAX_NAV_ITEMS_PER_SECTION:
+                    output.append(
+                        split_node(
+                            str(title),
+                            rebuilt_children,
+                        )
+                    )
+                else:
+                    output.append({
+                        title: rebuilt_children
+                    })
+            else:
+                output.append(item)
+        else:
+            output.append(item)
+
+    return output
+
+
+def generate_diataxis_indexes(docs_root: Path) -> None:
+    output_dir = docs_root / DIATAXIS_INDEX_DIR
+    if output_dir.exists():
+        shutil.rmtree(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    pages_by_type: Dict[str, List[Dict[str, str]]] = {
+        category: [] for category in DIATAXIS_TYPES
+    }
+
+    for page in iter_markdown(docs_root):
+        relative = page.relative_to(docs_root)
+        if relative.parts and relative.parts[0] == DIATAXIS_INDEX_DIR:
+            continue
+
+        metadata, body = split_front_matter(
+            page.read_text(encoding="utf-8-sig")
+        )
+        categories = metadata.get("categories", [])
+        if isinstance(categories, str):
+            categories = [categories]
+        if not isinstance(categories, list) or len(categories) != 1:
+            continue
+
+        category = str(categories[0]).strip().lower()
+        if category not in pages_by_type:
+            continue
+
+        fallback_title = (
+            page.stem.replace("-", " ").replace("_", " ").strip().capitalize()
+        )
+        pages_by_type[category].append({
+            "title": markdown_title(body, fallback_title),
+            "summary": str(metadata.get("summary", "")).strip(),
+            "section": str(metadata.get("section", "")).strip(),
+            "level": str(metadata.get("level", "")).strip(),
+            "path": relative.as_posix(),
+        })
+
+    for category, pages in pages_by_type.items():
+        pages.sort(key=lambda item: (
+            item["section"].casefold(),
+            item["title"].casefold(),
+            item["path"].casefold(),
+        ))
+        info = DIATAXIS_TYPES[category]
+        slug = info["slug"]
+        lines = [
+            "---",
+            f"title: {info['label']}",
+            "generated_diataxis_index: true",
+            "hide:",
+            "  - toc",
+            "---",
+            "",
+            f"# {info['label']}",
+            "",
+            info["description"],
+            "",
+        ]
+
+        if pages:
+            lines.extend([
+                f"{len(pages)} page(s) in this category.",
+                "",
+                "## Pages",
+                "",
+            ])
+            for page in pages:
+                title = escape_markdown_label(page["title"])
+                target = f"../{page['path']}"
+                metadata_parts = [
+                    value
+                    for value in (page["section"], page["level"])
+                    if value
+                ]
+                lines.append(f"- [**{title}**]({target})")
+                if metadata_parts:
+                    lines.append(
+                        "  <span class=\"cividoc-category-meta\">"
+                        f"{escape(' · '.join(metadata_parts))}"
+                        "</span>"
+                    )
+                if page["summary"]:
+                    lines.append(
+                        "  <span class=\"cividoc-category-summary\">"
+                        f"{escape(page['summary'])}"
+                        "</span>"
+                    )
+            lines.extend(["", "{: .cividoc-category-list }", ""])
+        else:
+            lines.append(info["empty"])
+
+        (output_dir / f"{slug}.md").write_text(
+            "\n".join(lines).rstrip() + "\n",
+            encoding="utf-8",
+        )
+
+    overview_lines = [
+        "---",
+        "title: Browse by content category",
+        "generated_diataxis_index: true",
+        "hide:",
+        "  - toc",
+        "---",
+        "",
+        "# Browse by content category",
+        "",
+        "Choose the kind of documentation that matches your current need.",
+        "",
+    ]
+    for info in DIATAXIS_TYPES.values():
+        overview_lines.extend([
+            f"- [**{info['label']}**]({info['slug']}.md)",
+            f"  {info['description']}",
+        ])
+    overview_lines.extend(["", "{: .cividoc-category-cards }", ""])
+    (output_dir / "index.md").write_text(
+        "\n".join(overview_lines).rstrip() + "\n",
+        encoding="utf-8",
+    )
+
+    counts = ", ".join(
+        f"{DIATAXIS_TYPES[category]['label']}: {len(pages)}"
+        for category, pages in pages_by_type.items()
+    )
+    print(f"✅ Pages de catégories générées — {counts}")
+
+
+def install_category_homepage(docs_root: Path) -> None:
+    homepage = docs_root / "index.md"
+    if not homepage.exists():
+        print("⚠️ Impossible d'ajouter les catégories : docs/index.md est absent.")
+        return
+
+    text = homepage.read_text(encoding="utf-8-sig")
+    start_marker = "<!-- CiviDoc category browser:start -->"
+    end_marker = "<!-- CiviDoc category browser:end -->"
+    text = re.sub(
+        re.escape(start_marker) + r"[\s\S]*?" + re.escape(end_marker) + r"\s*",
+        "",
+        text,
+    )
+    text = re.sub(
+        r"(?ms)^## Browse by content category\s*$.*?(?=^##\s|\Z)",
+        "",
+        text,
+    )
+
+    lines = [
+        start_marker,
+        "## Browse by content category",
+        "",
+        "To match your learning needs, browse the documentation by content category:",
+        "",
+    ]
+    for info in DIATAXIS_TYPES.values():
+        lines.extend([
+            f"- [**{info['label']}**]({DIATAXIS_INDEX_DIR}/{info['slug']}.md)",
+            f"  {info['description']}",
+        ])
+    lines.extend(["", "{: .cividoc-category-cards }", end_marker, ""])
+    block = "\n".join(lines)
+
+    first_h2 = re.search(r"(?m)^##\s+", text)
+    if first_h2:
+        position = first_h2.start()
+        text = text[:position].rstrip() + "\n\n" + block + "\n" + text[position:].lstrip()
+    else:
+        source_comment = re.search(r"(?im)^<!--\s*Source:.*?-->\s*$", text)
+        if source_comment:
+            position = source_comment.start()
+            text = text[:position].rstrip() + "\n\n" + block + "\n" + text[position:]
+        else:
+            text = text.rstrip() + "\n\n" + block
+
+    homepage.write_text(text.rstrip() + "\n", encoding="utf-8")
+    print("✅ Sélecteur de catégories ajouté à la page d'accueil")
+
+
+def configure_category_presentation(
+    site: Path,
+    config: Dict[str, Any],
+) -> None:
+    css_dir = site / "docs" / "css"
+    css_dir.mkdir(parents=True, exist_ok=True)
+    css = """
+.cividoc-category-cards,
+.cividoc-category-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+.cividoc-category-cards > li,
+.cividoc-category-list > li {
+  margin: 0 !important;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: .65rem;
+  background: var(--md-default-bg-color);
+  box-shadow: 0 .15rem .45rem rgb(0 0 0 / 7%);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+.cividoc-category-cards > li:hover,
+.cividoc-category-list > li:hover {
+  transform: translateY(-.15rem);
+  border-color: var(--md-primary-fg-color);
+  box-shadow: 0 .45rem 1rem rgb(0 0 0 / 11%);
+}
+.cividoc-category-cards > li > p,
+.cividoc-category-list > li > p { margin: 0; }
+.cividoc-category-cards a,
+.cividoc-category-list a {
+  display: block;
+  margin-bottom: .4rem;
+  color: var(--md-primary-fg-color);
+  font-size: 1.05rem;
+}
+.cividoc-category-meta {
+  display: block;
+  margin-bottom: .45rem;
+  color: var(--md-default-fg-color--light);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+.cividoc-category-summary {
+  display: block;
+  color: var(--md-default-fg-color--light);
+  line-height: 1.5;
+}
+@media (max-width: 40rem) {
+  .cividoc-category-cards,
+  .cividoc-category-list { grid-template-columns: 1fr; }
+}
+""".strip()
+    (css_dir / "categories.css").write_text(css + "\n", encoding="utf-8")
+
+    extra_css = config.setdefault("extra_css", [])
+    if not isinstance(extra_css, list):
+        extra_css = []
+        config["extra_css"] = extra_css
+    if "css/categories.css" not in extra_css:
+        extra_css.append("css/categories.css")
+
+    extensions = config.setdefault("markdown_extensions", [])
+    if not isinstance(extensions, list):
+        extensions = []
+        config["markdown_extensions"] = extensions
+    extension_names = set()
+    for extension in extensions:
+        if isinstance(extension, str):
+            extension_names.add(extension)
+        elif isinstance(extension, dict):
+            extension_names.update(extension.keys())
+    if (
+        "attr_list" not in extension_names
+        and "markdown.extensions.attr_list" not in extension_names
+    ):
+        extensions.append("attr_list")
+
+
+def configure_categories(config: Dict[str, Any]) -> None:
+    plugins = config.get("plugins", [])
+    if not isinstance(plugins, list):
+        plugins = []
+
+    filtered: List[Any] = []
+    has_search = False
+    for plugin in plugins:
+        if isinstance(plugin, str):
+            name = plugin
+        elif isinstance(plugin, dict) and plugin:
+            name = next(iter(plugin))
+        else:
+            name = ""
+        if name == "categories":
+            continue
+        if name == "search":
+            has_search = True
+        filtered.append(plugin)
+
+    if not has_search:
+        filtered.insert(0, {"search": {"lang": "en"}})
+    config["plugins"] = filtered
+
+
+def install_translator(site: Path, config: Dict[str, Any], endpoint: str) -> None:
+    js_dir = site / "docs" / "js"
+    js_dir.mkdir(parents=True, exist_ok=True)
+    script = r'''(() => {
+  const endpoint = __ENDPOINT__;
+  const languages = {en:"English",fr:"Français",it:"Italiano",nl:"Nederlands",es:"Español",ca:"Català"};
+  const originals = new WeakMap();
+  const excluded = "script,style,pre,code,kbd,samp,textarea,svg,[data-no-translate]";
+
+  function injectSelector() {
+    if (document.getElementById("cividoc-language")) return;
+    const box = document.createElement("div");
+    box.id = "cividoc-language";
+    box.style.cssText = "position:fixed;right:1rem;top:.55rem;z-index:1000;background:var(--md-primary-fg-color);padding:.25rem;border-radius:.2rem";
+    const select = document.createElement("select");
+    select.setAttribute("aria-label", "Language");
+    Object.entries(languages).forEach(([code,name]) => select.add(new Option(name, code)));
+    select.addEventListener("change", () => translate(select.value));
+    box.appendChild(select);
+    document.body.appendChild(box);
+  }
+
+  function nodes() {
+    const root = document.querySelector(".md-content__inner") || document.querySelector("main");
+    if (!root) return [];
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (!node.nodeValue.trim() || node.parentElement.closest(excluded)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const result=[]; while (walker.nextNode()) result.push(walker.currentNode); return result;
+  }
+
+  async function translate(lang) {
+    const textNodes = nodes();
+    textNodes.forEach(node => { if (!originals.has(node)) originals.set(node, node.nodeValue); });
+    if (lang === "en") { textNodes.forEach(node => node.nodeValue = originals.get(node)); return; }
+    for (let i=0; i<textNodes.length; i+=20) {
+      const batch = textNodes.slice(i,i+20);
+      const q = batch.map(node => originals.get(node));
+      const response = await fetch(endpoint, {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({q,source:"en",target:lang,format:"text"})});
+      if (!response.ok) throw new Error(`LibreTranslate ${response.status}`);
+      const payload = await response.json();
+      const translated = Array.isArray(payload.translatedText) ? payload.translatedText : [payload.translatedText];
+      batch.forEach((node,index) => { if (translated[index]) node.nodeValue = translated[index]; });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", injectSelector);
+  if (typeof document$ !== "undefined") document$.subscribe(injectSelector);
+})();
+'''.replace("__ENDPOINT__", json.dumps(endpoint))
+    (js_dir / "libretranslate-selector.js").write_text(script, encoding="utf-8")
+    extra = config.setdefault("extra_javascript", [])
+    if "js/libretranslate-selector.js" not in extra:
+        extra.append("js/libretranslate-selector.js")
+
+NAVIGATION_PROMPT_VERSION = "cividoc-global-nav-v2"
+
+NAVIGATION_PROMPT = r"""
+You are an information architect reorganising the complete CiviCRM User Guide.
+You receive the complete page inventory and the current official navigation.
+
+Design one simpler global navigation that helps non-technical users reach the
+right page quickly.
+
+MANDATORY RULES
+- Return JSON only. Do not use Markdown fences.
+- Return an object with one key named "nav" containing an array.
+- A section is {"title": "...", "children": [...]}.
+- A page is {"path": "exact/path.md"}.
+- Use every supplied page path exactly once.
+- Never create, rename, alter or omit a page path.
+- Never use a URL in place of a Markdown path.
+- Preserve index.md as the first page.
+- Do not create a redundant top-level wrapper named "User Guide". The guide is
+  already the whole site. Put useful sections directly at the root, after Home.
+- Preserve meaningful subsections: the result must contain nested subsections,
+  not one flat list of pages.
+- Prefer 2 or 3 useful navigation levels. You may use a fourth level when it
+  makes a large topic substantially easier to scan.
+- Every section, including the root, may contain at most 7 direct choices
+  (pages and subsections combined). If it would contain more, create clear,
+  meaningful sub-subsections. Never use alphabetical buckets such as A–F.
+- Aim for 4 to 7 direct choices per section when the content supports it.
+- Keep section labels short, concrete and task-oriented.
+- Do not sort sections or pages alphabetically.
+- Order content by the user journey: orientation and prerequisites first,
+  common tasks next, less common and advanced material later.
+- Treat current_order and current_breadcrumbs as the editorial baseline. Change
+  them only when that clearly simplifies access.
+- Use each page's rewritten title, summary, functional section and Diátaxis type
+  to decide where it belongs.
+- Do not make Tutorial, How-to, Reference and Explanation the four primary
+  branches. A separate “Browse by content category” navigation is added by the
+  build script.
+- Still follow Diátaxis locally: keep learning sequences coherent, place task
+  pages near the relevant feature, and put conceptual/reference material after
+  the tasks it supports.
+- Avoid catch-all sections when a precise functional section is possible.
+- Do not duplicate a page in several sections.
+""".strip()
+
+
+def _strip_json_fence(value: str) -> str:
+    value = value.strip().lstrip("\ufeff")
+    match = re.fullmatch(
+        r"```(?:json)?\s*\n([\s\S]*?)\n```",
+        value,
+        flags=re.IGNORECASE,
+    )
+    return match.group(1).strip() if match else value
+
+
+def _nav_ai_request(
+    prompt: str,
+    provider: str,
+    model: str,
+    preset: str,
+    retries: int,
+) -> str:
+    for attempt in range(1, retries + 1):
+        try:
+            if provider == "perplexity":
+                try:
+                    from perplexity import Perplexity
+                except ImportError as exc:
+                    raise RuntimeError(
+                        "Le paquet perplexityai est requis pour --ai-nav."
+                    ) from exc
+
+                key = os.getenv("PERPLEXITY_API_KEY", "").strip()
+                if not key:
+                    raise RuntimeError("Variable PERPLEXITY_API_KEY absente.")
+
+                client = Perplexity(
+                    api_key=key,
+                    timeout=900.0,
+                    max_retries=0,
+                )
+                response = client.responses.create(
+                    preset=preset,
+                    input=prompt,
+                )
+                if response.status != "completed":
+                    raise RuntimeError(
+                        f"Réponse Perplexity non terminée : {response.status}"
+                    )
+                result = response.output_text or ""
+            elif provider == "openai":
+                try:
+                    from openai import OpenAI
+                except ImportError as exc:
+                    raise RuntimeError(
+                        "Le paquet openai est requis pour --ai-nav."
+                    ) from exc
+
+                key = os.getenv("OPENAI_API_KEY", "").strip()
+                if not key:
+                    raise RuntimeError("Variable OPENAI_API_KEY absente.")
+                if not model:
+                    raise RuntimeError("--model est requis avec OpenAI.")
+
+                kwargs: Dict[str, Any] = {
+                    "api_key": key,
+                    "timeout": 900.0,
+                }
+                base_url = os.getenv("OPENAI_BASE_URL", "").strip()
+                if base_url:
+                    kwargs["base_url"] = base_url
+                client = OpenAI(**kwargs)
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.1,
+                    response_format={"type": "json_object"},
+                )
+                result = response.choices[0].message.content or ""
+            else:
+                raise RuntimeError(f"Fournisseur inconnu : {provider}")
+
+            if not result.strip():
+                raise RuntimeError("Réponse IA vide pour la navigation")
+            return _strip_json_fence(result)
+        except Exception as exc:
+            if attempt == retries:
+                raise RuntimeError(
+                    f"Échec IA navigation après {retries} tentatives : {exc}"
+                ) from exc
+            delay = min(60, 2 ** attempt)
+            print(
+                f"⚠️ Navigation IA échouée ({attempt}/{retries}); "
+                f"nouvel essai dans {delay}s : {exc}"
+            )
+            time.sleep(delay)
+    raise AssertionError("unreachable")
+
+
+def _nav_entries(
+    nav: Any,
+    breadcrumbs: Optional[List[str]] = None,
+) -> List[Tuple[str, List[str]]]:
+    breadcrumbs = breadcrumbs or []
+    result: List[Tuple[str, List[str]]] = []
+
+    if isinstance(nav, list):
+        for item in nav:
+            result.extend(_nav_entries(item, breadcrumbs))
+    elif isinstance(nav, dict):
+        for title, value in nav.items():
+            if isinstance(value, str) and value.endswith(".md"):
+                result.append((value, breadcrumbs + [str(title)]))
+            elif isinstance(value, list):
+                result.extend(
+                    _nav_entries(value, breadcrumbs + [str(title)])
+                )
+    elif isinstance(nav, str) and nav.endswith(".md"):
+        result.append((nav, breadcrumbs))
+
+    return result
+
+
+def _page_inventory(
+    docs_root: Path,
+    current_nav: List[Any],
+) -> List[Dict[str, Any]]:
+    current_entries = _nav_entries(current_nav)
+    positions: Dict[str, Tuple[int, List[str]]] = {}
+    for order, (path, breadcrumbs) in enumerate(current_entries):
+        positions.setdefault(path, (order, breadcrumbs))
+
+    inventory: List[Dict[str, Any]] = []
+    next_order = len(current_entries)
+
+    for page in iter_markdown(docs_root):
+        relative = page.relative_to(docs_root)
+        path = relative.as_posix()
+        if relative.parts and relative.parts[0] == DIATAXIS_INDEX_DIR:
+            continue
+
+        metadata, body = split_front_matter(
+            page.read_text(encoding="utf-8-sig")
+        )
+        if metadata.get("generated_diataxis_index"):
+            continue
+
+        fallback = (
+            page.stem.replace("-", " ").replace("_", " ").strip().capitalize()
+        )
+        title = markdown_title(body, fallback)
+        categories = metadata.get("categories", [])
+        if isinstance(categories, str):
+            categories = [categories]
+        category = str(categories[0]).strip() if categories else ""
+
+        if path in positions:
+            order, breadcrumbs = positions[path]
+        else:
+            order, breadcrumbs = next_order, []
+            next_order += 1
+
+        inventory.append({
+            "path": path,
+            "title": title,
+            "summary": str(metadata.get("summary", "")).strip(),
+            "section": str(metadata.get("section", "")).strip(),
+            "diataxis": category,
+            "level": str(metadata.get("level", "")).strip(),
+            "current_order": order,
+            "current_breadcrumbs": breadcrumbs,
+        })
+
+    inventory.sort(key=lambda item: item["current_order"])
+    return inventory
+
+
+def _retitle_existing_nav(
+    nav: Any,
+    titles: Dict[str, str],
+) -> List[Any]:
+    result: List[Any] = []
+    if not isinstance(nav, list):
+        return result
+
+    for item in nav:
+        if isinstance(item, str) and item.endswith(".md"):
+            result.append({titles.get(item, PurePosixPath(item).stem): item})
+        elif isinstance(item, dict):
+            for title, value in item.items():
+                if isinstance(value, str) and value.endswith(".md"):
+                    result.append({titles.get(value, str(title)): value})
+                elif isinstance(value, list):
+                    children = _retitle_existing_nav(value, titles)
+                    if children:
+                        result.append({str(title): children})
+                else:
+                    result.append({str(title): value})
+        else:
+            result.append(item)
+    return result
+
+
+def _convert_ai_nav(
+    proposed: Any,
+    titles: Dict[str, str],
+    depth: int = 0,
+) -> List[Any]:
+    if depth > 4:
+        raise RuntimeError("Navigation IA trop profonde (maximum 4 niveaux).")
+    if not isinstance(proposed, list):
+        raise RuntimeError("Le champ nav de la réponse IA doit être une liste.")
+
+    result: List[Any] = []
+    for item in proposed:
+        if not isinstance(item, dict):
+            raise RuntimeError("Chaque entrée de navigation IA doit être un objet.")
+
+        path = item.get("path")
+        children = item.get("children")
+        title = str(item.get("title", "")).strip()
+
+        if isinstance(path, str):
+            if children is not None:
+                raise RuntimeError("Une page IA ne peut pas aussi être une section.")
+            if path not in titles:
+                raise RuntimeError(f"Chemin IA inconnu ou modifié : {path}")
+            # Le libellé final vient toujours du H1 réécrit.
+            result.append({titles[path]: path})
+        elif children is not None:
+            if not title:
+                raise RuntimeError("Une section IA doit avoir un titre.")
+            converted = _convert_ai_nav(children, titles, depth + 1)
+            if converted:
+                result.append({title: converted})
+        else:
+            raise RuntimeError("Entrée IA sans path ni children.")
+    return result
+
+
+def _remove_redundant_user_guide(nav: List[Any]) -> List[Any]:
+    """Retire uniquement le conteneur racine sans valeur « User Guide »."""
+    result: List[Any] = []
+    for item in nav:
+        if isinstance(item, dict) and len(item) == 1:
+            title, value = next(iter(item.items()))
+            if (
+                str(title).strip().casefold() == "user guide"
+                and isinstance(value, list)
+            ):
+                result.extend(value)
+                continue
+        result.append(item)
+    return result
+
+
+def _navigation_readability_issues(
+    nav: Any,
+    location: str = "root",
+    max_choices: int = 7,
+) -> List[str]:
+    """Vérifie la charge cognitive de chaque niveau du menu."""
+    issues: List[str] = []
+    if not isinstance(nav, list):
+        return issues
+
+    if len(nav) > max_choices:
+        issues.append(
+            f"{location} contient {len(nav)} choix "
+            f"(maximum {max_choices})"
+        )
+
+    for item in nav:
+        if not isinstance(item, dict):
+            continue
+        for title, value in item.items():
+            if isinstance(value, list):
+                issues.extend(
+                    _navigation_readability_issues(
+                        value,
+                        f"{location} > {title}",
+                        max_choices,
+                    )
+                )
+    return issues
+
+def _nav_depth(nav: Any, depth: int = 0) -> int:
+    maximum = depth
+    if isinstance(nav, list):
+        for item in nav:
+            maximum = max(maximum, _nav_depth(item, depth))
+    elif isinstance(nav, dict):
+        for value in nav.values():
+            if isinstance(value, list):
+                maximum = max(maximum, _nav_depth(value, depth + 1))
+    return maximum
+
+
+def _validate_complete_nav(
+    nav: List[Any],
+    expected_paths: List[str],
+) -> None:
+    actual = collect_nav_paths(nav)
+    duplicates = sorted({path for path in actual if actual.count(path) > 1})
+    missing = [path for path in expected_paths if path not in actual]
+    unexpected = [path for path in actual if path not in expected_paths]
+
+    messages: List[str] = []
+    if duplicates:
+        messages.append("doublons: " + ", ".join(duplicates))
+    if missing:
+        messages.append("pages absentes: " + ", ".join(missing))
+    if unexpected:
+        messages.append("chemins inconnus: " + ", ".join(unexpected))
+    if _nav_depth(nav) < 2:
+        messages.append("aucune vraie sous-rubrique n'a été proposée")
+
+    for item in nav:
+        if isinstance(item, dict) and any(
+            str(title).strip().casefold() == "user guide"
+            for title in item
+        ):
+            messages.append(
+                "le niveau racine redondant « User Guide » est interdit"
+            )
+
+    messages.extend(
+        _navigation_readability_issues(nav, max_choices=7)
+    )
+    if messages:
+        raise RuntimeError("Navigation IA invalide — " + " ; ".join(messages))
+
+
+def build_global_navigation(
+    paths: Paths,
+    docs_root: Path,
+    official_nav: Any,
+    provider: str,
+    model: str,
+    preset: str,
+    retries: int,
+    request_ai: bool,
+    refresh: bool,
+) -> List[Any]:
+    if not isinstance(official_nav, list):
+        raise RuntimeError("La navigation officielle doit être une liste.")
+
+    # transform_nav conserve l'ordre éditorial et les sous-rubriques existantes,
+    # tout en insérant les pages issues d'un découpage près de leur page source.
+    transformed = transform_nav(official_nav, docs_root)
+    inventory = _page_inventory(docs_root, transformed)
+    titles = {item["path"]: item["title"] for item in inventory}
+    expected_paths = [item["path"] for item in inventory]
+
+    fallback = _remove_redundant_user_guide(
+        _retitle_existing_nav(transformed, titles)
+    )
+    listed = set(collect_nav_paths(fallback))
+    unlisted = [path for path in expected_paths if path not in listed]
+    if unlisted:
+        fallback.append({
+            "More topics": [{titles[path]: path} for path in unlisted]
+        })
+
+    digest_payload = {
+        "version": NAVIGATION_PROMPT_VERSION,
+        "prompt": NAVIGATION_PROMPT,
+        "provider": provider,
+        "model": model,
+        "preset": preset,
+        "official_nav": official_nav,
+        "inventory": inventory,
+    }
+    digest = hashlib.sha256(
+        json.dumps(digest_payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    ).hexdigest()
+
+    cache_path = paths.state / "navigation-manifest.json"
+    cache = load_json(cache_path)
+    cached_nav = cache.get("nav") if cache.get("sha256") == digest else None
+
+    if cached_nav and not refresh:
+        try:
+            _validate_complete_nav(cached_nav, expected_paths)
+            print("⏭️ Navigation IA inchangée : cache réutilisé")
+            return cached_nav
+        except RuntimeError:
+            cached_nav = None
+
+    if not request_ai:
+        print(
+            "ℹ️ Navigation officielle conservée et retitrée. "
+            "Utilisez --ai-nav pour demander une simplification globale."
+        )
+        return fallback
+
+    prompt = (
+        NAVIGATION_PROMPT
+        + "\n\nCURRENT OFFICIAL NAVIGATION:\n"
+        + json.dumps(official_nav, ensure_ascii=False, indent=2)
+        + "\n\nCOMPLETE PAGE INVENTORY:\n"
+        + json.dumps(inventory, ensure_ascii=False, indent=2)
+    )
+    raw = _nav_ai_request(prompt, provider, model, preset, retries)
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"JSON de navigation IA invalide : {exc}") from exc
+
+    converted = _remove_redundant_user_guide(
+        _convert_ai_nav(payload.get("nav"), titles)
+    )
+    _validate_complete_nav(converted, expected_paths)
+    save_json(cache_path, {"sha256": digest, "nav": converted})
+    print(
+        f"✅ Navigation globale proposée par l'IA : "
+        f"{len(expected_paths)} pages, {_nav_depth(converted)} niveaux"
+    )
+    return converted
+
+def add_diataxis_navigation(config: Dict[str, Any]) -> None:
+    nav = config.setdefault("nav", [])
+    if not isinstance(nav, list):
+        raise RuntimeError("La clé nav doit être une liste.")
+
+    nav[:] = [
+        item
+        for item in nav
+        if not (
+            isinstance(item, dict)
+            and (
+                "Categories" in item
+                or "Browse by content category" in item
+            )
+        )
+    ]
+
+    category_navigation: List[Dict[str, str]] = [
+        {"Overview": f"{DIATAXIS_INDEX_DIR}/index.md"}
+    ]
+    for category, info in DIATAXIS_TYPES.items():
+        slug = info.get("slug", category)
+        category_navigation.append({
+            info["label"]: f"{DIATAXIS_INDEX_DIR}/{slug}.md"
+        })
+
+    nav.append({"Browse by content category": category_navigation})
+
+
+def generate_mkdocs(
+    paths: Paths,
+    translator_url: Optional[str],
+    provider: str,
+    model: str,
+    preset: str,
+    retries: int,
+    ai_navigation: bool,
+    refresh_navigation: bool,
+) -> Dict[str, Any]:
+    template = paths.upstream / "mkdocs.yml"
+    config = yaml.safe_load(template.read_text(encoding="utf-8")) or {}
+    docs_root = paths.site / "docs"
+
+    official_nav = config.get("nav", [])
+    config["nav"] = build_global_navigation(
+        paths=paths,
+        docs_root=docs_root,
+        official_nav=official_nav,
+        provider=provider,
+        model=model,
+        preset=preset,
+        retries=retries,
+        request_ai=ai_navigation,
+        refresh=refresh_navigation,
+    )
+
+    config["nav"] = auto_split_large_nav_sections(
+        config["nav"]
+    )
+
+    # L'accès transversal Diátaxis reste séparé de la navigation fonctionnelle.
+    add_diataxis_navigation(config)
+
+    # Les chemins Markdown restent inchangés : les URL officielles existantes
+    # restent donc stables, notamment pour la première page d'un découpage.
+    config["use_directory_urls"] = True
+    configure_categories(config)
+    configure_category_presentation(paths.site, config)
+
+    if translator_url:
+        install_translator(paths.site, config, translator_url)
+
+    output = paths.site / "mkdocs.yml"
+    output.write_text(
+        yaml.safe_dump(
+            config,
+            sort_keys=False,
+            allow_unicode=True,
+            width=140,
+        ),
+        encoding="utf-8",
+    )
+
+    count = len(collect_nav_paths(config["nav"]))
+    if count == 0:
+        raise RuntimeError("La navigation générée est vide.")
+    print(f"✅ Navigation générée : {count} entrées")
+    return config
+
+def primary_category(meta: Dict[str, Any]) -> str:
+    categories = meta.get("categories", [])
+
+    if isinstance(categories, str):
+        categories = [categories]
+
+    if not isinstance(categories, list) or not categories:
+        return ""
+
+    return str(categories[0]).strip().lower()
+
+def diataxis_shape_issues(
+    meta: Dict[str, Any],
+    body: str,
+) -> List[str]:
+    issues: List[str] = []
+    category = primary_category(meta)
+    ordered_steps = len(ORDERED_STEP_RE.findall(body))
+    has_concept_section = bool(CONCEPT_HEADING_RE.search(body))
+    has_procedure_section = bool(PROCEDURE_HEADING_RE.search(body))
+    has_expected_result = bool(EXPECTED_RESULT_RE.search(body))
+
+    if len(meta.get("categories", [])) > 1:
+        issues.append(
+            "ERROR More than one Diátaxis category"
+        )
+
+    if category == "tutorial":
+        if ordered_steps < 2:
+            issues.append(
+                "WARNING Tutorial has no clear learning sequence"
+            )
+
+        if not has_expected_result:
+            issues.append(
+                "NOTICE Tutorial has no observable result or checkpoint"
+            )
+
+    elif category == "guide":
+        if ordered_steps < 2 and not has_procedure_section:
+            issues.append(
+                "WARNING Guide has no identifiable action sequence"
+            )
+
+        if has_concept_section:
+            issues.append(
+                "NOTICE Guide may contain conceptual material "
+                "that belongs in Explanation"
+            )
+
+    elif category == "reference":
+        if has_procedure_section and ordered_steps >= 3:
+            issues.append(
+                "NOTICE Reference may contain a procedure "
+                "that belongs in Guide"
+            )
+
+    elif category == "explanation":
+        if ordered_steps >= 3:
+            issues.append(
+                "WARNING Explanation contains a long ordered procedure"
+            )
+
+        if not has_concept_section:
+            issues.append(
+                "NOTICE Explanation has no clearly identified concept"
+            )
+
+    if (
+        category in {"tutorial", "guide"}
+        and has_concept_section
+        and ordered_steps >= 3
+    ):
+        issues.append(
+            "NOTICE Possible mixed action and explanation content; "
+            "review whether the page should be split"
+        )
+
+    if (
+        category in {"reference", "explanation"}
+        and has_procedure_section
+        and ordered_steps >= 3
+    ):
+        issues.append(
+            "NOTICE Possible mixed cognition and action content"
+        )
+
+    return issues
+
+def analyze_page(path: Path, docs_root: Path) -> Tuple[List[str], int]:
+    rel = path.relative_to(docs_root).as_posix()
+    meta, body = split_front_matter(path.read_text(encoding="utf-8-sig"))
+    issues: List[str] = []
+    for key in ("categories", "level", "summary", "section"):
+        if not meta.get(key):
+            issues.append(f"ERROR Missing or empty field: {key}")
+    cats = meta.get("categories", [])
+    cats = [cats] if isinstance(cats, str) else cats if isinstance(cats, list) else []
+    invalid = [str(cat) for cat in cats if str(cat).lower() not in ALLOWED_CATEGORIES]
+    if invalid:
+        issues.append(f"WARNING Invalid categories: {invalid}")
+    if str(meta.get("level", "")).lower() not in ALLOWED_LEVELS:
+        issues.append(f"WARNING Invalid level: {meta.get('level', '')}")
+        issues.extend(diataxis_shape_issues(meta, body))
+    if len(str(meta.get("summary", "")).split()) < 5:
+        issues.append("NOTICE Summary shorter than five words")
+    if not re.search(r"(?m)^#\s+", body):
+        issues.append("WARNING Missing H1")
+    if not re.search(r"(?m)^##\s+", body):
+        issues.append("NOTICE No H2 section")
+    words = len(re.findall(r"\b\w+\b", re.sub(r"<!--[\s\S]*?-->", "", body)))
+    if words < 120:
+        issues.append("NOTICE Fewer than 120 words")
+    elif words > 3000:
+        issues.append("NOTICE More than 3000 words; consider splitting")
+    penalties = 0
+
+    for issue in issues:
+        if issue.startswith("ERROR"):
+            penalties += 15
+        elif issue.startswith("WARNING"):
+            penalties += 5
+        elif issue.startswith("NOTICE"):
+            penalties += 1
+
+    source_comments = re.findall(
+        r"<!--\s*Source:\s*.+?\s*-->",
+        body,
+        flags=re.IGNORECASE,
+    )
+
+    if not source_comments:
+        issues.append("WARNING Missing hidden source comment")
+    elif len(source_comments) > 1:
+        issues.append("WARNING More than one source comment")
+    elif not body.rstrip().endswith(source_comments[-1]):
+        issues.append("NOTICE Source comment is not at the end")
+
+    return issues, max(0, 100 - penalties)
+
+def audit_diataxis(paths: Paths) -> None:
+    rows = []
+    total_score = 0
+    for page in iter_markdown(paths.site / "docs"):
+        if "categories" in page.relative_to(paths.site / "docs").parts:
+            continue
+        issues, score = analyze_page(page, paths.site / "docs")
+        rel = page.relative_to(paths.site / "docs").as_posix()
+        rows.append((rel, score, issues))
+        total_score += score
+    average = int(total_score / len(rows)) if rows else 0
+    paths.reports.mkdir(parents=True, exist_ok=True)
+    text_lines = []
+    md_lines = ["# Diátaxis validation report", "", "| File | Score | Status | Details |", "|---|---:|:---:|---|"]
+    for rel, score, issues in rows:
+        status = "OK" if not issues else "CHECK"
+        text_lines.append(f"{status} {rel} ({score}/100)")
+        text_lines.extend(f"  {issue}" for issue in issues)
+        details = "<br>".join(issue.replace("|", "\\|") for issue in issues)
+        md_lines.append(f"| `{rel}` | {score}/100 | {status} | {details} |")
+    text_lines.append(f"\nAverage score: {average}/100")
+    md_lines.extend(["", f"**Average score:** {average}/100"])
+    (paths.reports / "diataxis_report.txt").write_text("\n".join(text_lines) + "\n", encoding="utf-8")
+    (paths.reports / "diataxis_audit.md").write_text("\n".join(md_lines) + "\n", encoding="utf-8")
+    print(f"✅ Audit Diátaxis : {len(rows)} pages, moyenne {average}/100")
+
+
+def validate_nav_files(config: Dict[str, Any], docs_root: Path) -> None:
+    missing = [path for path in collect_nav_paths(config.get("nav", [])) if not (docs_root / Path(path)).exists()]
+    if missing:
+        raise RuntimeError("Fichiers absents encore présents dans nav :\n" + "\n".join(missing))
+
+
+def build_site(
+    site: Path,
+    strict: bool,
+) -> None:
+    command = [
+        sys.executable,
+        "-m",
+        "mkdocs",
+        "build",
+        "--clean",
+    ]
+
+    if strict:
+        command.append("--strict")
+
+    print(
+        "🏗️ Construction MkDocs"
+        + (" en mode strict..." if strict else "...")
+    )
+
+    result = subprocess.run(
+        command,
+        cwd=str(site),
+        check=False,
+    )
+
+    if result.returncode == 0:
+        print("✅ Construction MkDocs terminée")
+        return
+
+    if strict:
+        raise RuntimeError(
+            "Le build MkDocs strict a échoué. "
+            "Corrigez les lignes WARNING affichées ci-dessus "
+            "ou utilisez temporairement --no-strict."
+        )
+
+    raise RuntimeError(
+        "Le build MkDocs a échoué. "
+        "Consultez la dernière erreur affichée ci-dessus."
+    )
+
+
+def serve_site(site: Path, address: str) -> None:
+    print(f"🌐 Serveur local : http://{address}/ (Ctrl+C pour arrêter)")
+    run_command([sys.executable, "-m", "mkdocs", "serve", "--dev-addr", address], site)
+
+
+def parse_csv_paths(value: str) -> List[str]:
+    return [part.strip().strip("/") for part in value.split(",") if part.strip()]
+
+
+def make_paths(workspace: Path, output: Path) -> Paths:
+    return Paths(
+        root=workspace,
+        upstream=workspace / "upstream-user-en",
+        rewritten=workspace / "rewritten-docs",
+        state=workspace / "state",
+        reports=output / "reports",
+        site=output,
+    )
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Pipeline unique CiviCRM User Guide → MkDocs"
+    )
+    parser.add_argument(
+        "command",
+        nargs="?",
+        choices=["run", "sync", "build", "serve"],
+        default="run",
+    )
+    parser.add_argument("--repo", default=OFFICIAL_REPO, help="Dépôt Git officiel")
+    parser.add_argument("--ref", help="Branche ou tag Git; branche par défaut si omis")
+    parser.add_argument("--workspace", default=DEFAULT_WORKSPACE)
+    parser.add_argument("--output", default=DEFAULT_OUTPUT)
+    parser.add_argument("--fresh", action="store_true", help="Supprimer cache, réécritures et sortie")
+    parser.add_argument("--ai", action="store_true", help="Réécrire les pages avec l'API IA")
+    parser.add_argument(
+        "--provider",
+        choices=["perplexity", "openai"],
+        default=os.getenv("CIVIDOC_PROVIDER", "perplexity"),
+    )
+    parser.add_argument(
+        "--model",
+        default=os.getenv("CIVIDOC_MODEL", ""),
+        help="Modèle explicite, utilisé avec OpenAI",
+    )
+    parser.add_argument(
+        "--preset",
+        choices=["fast", "low", "medium", "high", "xhigh"],
+        default=os.getenv("CIVIDOC_PRESET", "high"),
+        help="Preset Perplexity Agent API",
+    )
+    parser.add_argument("--include", default=os.getenv("INCLUDE_SECTIONS", ""), help="Chemins séparés par des virgules")
+    parser.add_argument("--exclude", default=os.getenv("EXCLUDE_SECTIONS", ""), help="Chemins séparés par des virgules")
+    parser.add_argument("--limit", type=int, default=0, help="Limiter les appels IA pour un test")
+    parser.add_argument("--retries", type=int, default=5)
+    parser.add_argument("--translator-url", default=os.getenv("LIBRETRANSLATE_URL", ""), help="Endpoint /translate sans secret côté client")
+    parser.add_argument("--skip-build", action="store_true")
+    parser.add_argument("--no-strict", action="store_true")
+    parser.add_argument("--serve", action="store_true", help="Servir après le pipeline")
+    parser.add_argument("--address", default="127.0.0.1:8000")
+    parser.add_argument(
+        "--skip-existing-rewrites",
+        action="store_true",
+        help=(
+            "Ne pas relancer l'IA si une réécriture existe déjà."
+        ),
+    )
+    parser.add_argument(
+            "--ai-nav",
+            action="store_true",
+            help=(
+                "Demande à l'IA de proposer une navigation simplifiée "
+                "avec sous-rubriques, sans changer les URLs existantes."
+            ),
+        )
+
+    parser.add_argument(
+            "--refresh-nav",
+            action="store_true",
+            help=(
+                "Ignore le cache de navigation IA et force "
+                "une nouvelle proposition."
+            ),
+        )
+    return parser.parse_args()
+
+
+def main() -> int:
+    load_dotenv()
+    args = parse_args()
+    workspace = Path(args.workspace).resolve()
+    output = Path(args.output).resolve()
+    paths = make_paths(workspace, output)
+
+    try:
+        if args.fresh:
+            for folder in (workspace, output):
+                if folder.exists():
+                    shutil.rmtree(folder)
+
+        if args.command in ("run", "sync"):
+            sync_repository(args.repo, paths.upstream, args.ref)
+        if args.command == "sync":
+            return 0
+        if args.command == "build":
+            build_site(paths.site, strict=not args.no_strict)
+            return 0
+        if args.command == "serve":
+            serve_site(paths.site, args.address)
+            return 0
+
+        if args.ai:
+            rewrite_documents(
+                paths,
+                args.provider,
+                args.model,
+                parse_csv_paths(args.include),
+                parse_csv_paths(args.exclude),
+                args.retries,
+                args.limit,
+                args.preset,
+                args.skip_existing_rewrites,
+            )
+
+        copy_official_site(paths.upstream, paths.site)
+        migrate_first_split_to_official_url(paths)
+        overlay_rewritten(paths)
+
+        docs_root = paths.site / "docs"
+        clean_all_markdown(docs_root)
+        repair_markdown_targets(docs_root)
+        repair_links_to_split_pages(paths)
+        generate_diataxis_indexes(docs_root)
+        install_category_homepage(docs_root)
+
+        config = generate_mkdocs(
+            paths=paths,
+            translator_url=args.translator_url.strip() or None,
+            provider=args.provider,
+            model=args.model,
+            preset=args.preset,
+            retries=args.retries,
+            ai_navigation=(args.ai_nav or args.ai),
+            refresh_navigation=args.refresh_nav,
+        )
+        validate_nav_files(config, docs_root)
+        audit_diataxis(paths)
+
+        if not args.skip_build:
+            build_site(paths.site, strict=not args.no_strict)
+
+        print(f"🎉 Documentation prête dans : {paths.site}")
+        if args.serve:
+            serve_site(paths.site, args.address)
+        return 0
+    except KeyboardInterrupt:
+        print("\nArrêt demandé.")
+        return 130
+
+    except subprocess.CalledProcessError as exc:
+        print(
+            "❌ Une commande externe a échoué "
+            f"avec le code {exc.returncode}.",
+            file=sys.stderr,
+        )
+        return exc.returncode or 1
+
+    except RuntimeError as exc:
+        print(f"❌ {exc}", file=sys.stderr)
+        return 1
+
+    except Exception as exc:
+        print(
+            f"❌ Erreur inattendue : "
+            f"{type(exc).__name__}: {exc}",
+            file=sys.stderr,
+        )
+        return 1
+if __name__ == "__main__":
+    raise SystemExit(main())

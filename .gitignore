@@ -1,0 +1,6 @@
+.venv/
+.env
+.cividoc/
+generated-user-en/
+__pycache__/
+*.pyc
