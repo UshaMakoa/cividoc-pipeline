@@ -36,17 +36,16 @@ except ImportError:
         return False
 
 
-PIPELINE_VERSION = "2026.10-navigation-v6"
-NAVIGATION_PROMPT_VERSION = (
-    "task-navigation-page-ids-v6"
-)
-REWRITE_PROMPT_VERSION = "source-faithful-enriched-frontmatter-v5"
+PIPELINE_VERSION = "2026.10-navigation-v7"
+NAVIGATION_PROMPT_VERSION = "shallow-ai-navigation-v7"
+REWRITE_PROMPT_VERSION = "source-faithful-taxonomy-v6"
 DEFAULT_WORKSPACE = ".cividoc"
 DEFAULT_OUTPUT = "generated-civicrm-docs"
 DEFAULT_GUIDES = "user-en,installation,sysadmin"
 BROWSE_DIR = "_browse"
-MAX_NAV_CHOICES = 7
+MAX_NAV_CHOICES = 18
 MAX_MAIN_ROOT_CHOICES = 6
+MAX_NAV_DEPTH = 3
 DEFAULT_FIDELITY_ATTEMPTS = 3
 
 ALLOWED_CATEGORIES = {"tutorial", "how-to", "reference", "explanation"}
@@ -323,6 +322,136 @@ TOPIC_DOMAIN = {
     "troubleshooting": "Configure, automate and extend",
     "general": "Configure, automate and extend",
 }
+
+AUDIENCE_LABELS: Dict[str, str] = {
+    "decision-maker": "Decision makers",
+    "civicrm-user": "CiviCRM users",
+    "functional-administrator": "Functional administrators",
+    "data-and-reporting-specialist": "Data and reporting specialists",
+    "system-administrator": "System administrators",
+    "implementer": "Implementers and site builders",
+    "developer": "Developers",
+    "documentation-contributor": "Documentation contributors",
+}
+
+# Audience is a small, controlled reader taxonomy. Functional jobs such as
+# event manager, fundraiser, or mailing author belong in topic/subtopic, not in
+# a new audience branch.
+AUDIENCE_ALIASES: Dict[str, str] = {
+    "decision-maker": "decision-maker",
+    "decision-makers": "decision-maker",
+    "organisation-decision-maker": "decision-maker",
+    "organisation-decision-makers": "decision-maker",
+    "organizational-decision-maker": "decision-maker",
+    "organizational-decision-makers": "decision-maker",
+    "organisations-planning-to-use-civicrm": "decision-maker",
+    "prospective-user": "decision-maker",
+    "prospective-users": "decision-maker",
+
+    "civicrm-user": "civicrm-user",
+    "civicrm-users": "civicrm-user",
+    "user": "civicrm-user",
+    "users": "civicrm-user",
+    "staff": "civicrm-user",
+    "internal-user": "civicrm-user",
+    "internal-users": "civicrm-user",
+    "office-staff": "civicrm-user",
+    "nonprofit-staff": "civicrm-user",
+    "non-profit-staff": "civicrm-user",
+    "volunteer": "civicrm-user",
+    "volunteers": "civicrm-user",
+
+    "functional-administrator": "functional-administrator",
+    "functional-administrators": "functional-administrator",
+    "power-user": "functional-administrator",
+    "power-users": "functional-administrator",
+    "form-builder": "functional-administrator",
+    "form-builders": "functional-administrator",
+
+    "data-and-reporting-specialist": "data-and-reporting-specialist",
+    "data-importer": "data-and-reporting-specialist",
+    "data-importers": "data-and-reporting-specialist",
+    "report-user": "data-and-reporting-specialist",
+    "report-users": "data-and-reporting-specialist",
+    "report-builder": "data-and-reporting-specialist",
+    "report-builders": "data-and-reporting-specialist",
+    "search-builder": "data-and-reporting-specialist",
+    "search-builders": "data-and-reporting-specialist",
+    "searchkit-user": "data-and-reporting-specialist",
+    "searchkit-users": "data-and-reporting-specialist",
+    "search-kit-user": "data-and-reporting-specialist",
+    "search-kit-users": "data-and-reporting-specialist",
+
+    "system-administrator": "system-administrator",
+    "system-administrators": "system-administrator",
+    "site-administrator": "system-administrator",
+    "site-administrators": "system-administrator",
+    "website-administrator": "system-administrator",
+    "website-administrators": "system-administrator",
+    "technical-user": "system-administrator",
+    "technical-users": "system-administrator",
+    "technician": "system-administrator",
+    "technicians": "system-administrator",
+    "people-installing-civicrm": "system-administrator",
+
+    "implementer": "implementer",
+    "implementers": "implementer",
+    "site-builder": "implementer",
+    "site-builders": "implementer",
+    "civicrm-site-builder": "implementer",
+    "civicrm-site-builders": "implementer",
+    "project-manager": "implementer",
+    "project-managers": "implementer",
+
+    "developer": "developer",
+    "developers": "developer",
+    "civicrm-developer": "developer",
+    "civicrm-developers": "developer",
+
+    "documentation-contributor": "documentation-contributor",
+    "documentation-contributors": "documentation-contributor",
+    "community-contributor": "documentation-contributor",
+    "community-contributors": "documentation-contributor",
+}
+
+AUDIENCE_KEYWORDS: List[Tuple[str, Tuple[str, ...]]] = [
+    ("developer", ("developer", "development", "api", "programmer", "code")),
+    ("documentation-contributor", ("documentation", "manual", "contributor")),
+    ("system-administrator", ("system administrator", "site administrator", "website administrator", "technical", "technician", "install")),
+    ("data-and-reporting-specialist", ("report", "search", "searchkit", "data import", "data export", "analyst")),
+    ("implementer", ("implementer", "site builder", "project manager", "configure profiles", "planning data")),
+    ("functional-administrator", ("administrator", "manager", "organizer", "organiser", "builder", "power user")),
+    ("decision-maker", ("decision maker", "planning to use", "prospective")),
+    ("civicrm-user", ("user", "staff", "volunteer", "author", "worker")),
+]
+
+
+def canonical_audience(value: Any) -> str:
+    candidate = slugify(str(value or ""))
+    if not candidate:
+        return ""
+    direct = AUDIENCE_ALIASES.get(candidate)
+    if direct:
+        return direct
+    words = candidate.replace("-", " ")
+    for audience, terms in AUDIENCE_KEYWORDS:
+        if any(term in words for term in terms):
+            return audience
+    return ""
+
+
+def normalise_audiences(value: Any, guide: "GuideConfig") -> List[str]:
+    result: List[str] = []
+    for raw in normalise_list(value):
+        audience = canonical_audience(raw)
+        if audience and audience not in result:
+            result.append(audience)
+    if not result:
+        result = ["system-administrator"] if guide.key in {"installation", "sysadmin"} else ["civicrm-user"]
+    # One primary and, where useful, one secondary audience per page. The
+    # global Browse section can therefore expose at most eight stable roles.
+    return result[:2]
+
 
 CATEGORY_ALIASES: Dict[str, str] = {
     "tutorial": "tutorial",
@@ -1423,71 +1552,26 @@ def add_curated_extensions_to_rewritten_pages(
             f"{topic} -> {page}"
         )
 
-def collapse_single_child_sections(
-    nodes: List[Dict[str, Any]],
-) -> List[Dict[str, Any]]:
-    """Collapse single-child sections without modifying page nodes."""
-
-    collapsed: List[Dict[str, Any]] = []
-
+def collapse_single_child_sections(nodes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Remove every section that merely hides one child."""
+    compacted: List[Dict[str, Any]] = []
     for node in nodes:
         if not isinstance(node, dict):
-            collapsed.append(node)
             continue
-
-        # Preserve page leaves exactly.
         if set(node) == {"page_id"}:
-            collapsed.append(
-                {
-                    "page_id": node["page_id"],
-                }
-            )
+            compacted.append({"page_id": str(node["page_id"])})
             continue
-
-        # Leave malformed nodes unchanged so validation can report them.
         if set(node) != {"title", "children"}:
-            collapsed.append(node)
+            compacted.append(node)
             continue
-
-        title = str(node.get("title", "")).strip()
-        raw_children = node.get("children", [])
-
-        if not isinstance(raw_children, list):
-            collapsed.append(node)
+        children = collapse_single_child_sections(list(node.get("children", [])))
+        if not children:
             continue
-
-        children = collapse_single_child_sections(raw_children)
-
-        while (
-            len(children) == 1
-            and isinstance(children[0], dict)
-            and set(children[0]) == {"title", "children"}
-        ):
-            child = children[0]
-            child_title = str(child.get("title", "")).strip()
-
-            if child_title:
-                title = (
-                    f"{title}: {child_title}"
-                    if title
-                    else child_title
-                )
-
-            child_children = child.get("children", [])
-
-            if not isinstance(child_children, list):
-                break
-
-            children = child_children
-
-        collapsed.append(
-            {
-                "title": title,
-                "children": children,
-            }
-        )
-
-    return collapsed
+        if len(children) == 1:
+            compacted.extend(children)
+            continue
+        compacted.append({"title": str(node.get("title", "")).strip(), "children": children})
+    return compacted
 
 def navigation_depth(
     nodes: List[Dict[str, Any]],
@@ -1641,6 +1725,21 @@ Classify each output page as exactly one of:
 - reference: accurate lookup information about the product;
 - explanation: concepts, relationships, context, or trade-offs.
 
+CLASSIFICATION EVIDENCE
+- tutorial: a learning-oriented walkthrough, worked example, quick start, or
+  guided first experience. Examples and end-to-end demonstrations are normally
+  tutorials even when they contain steps.
+- how-to: directions that help an already oriented reader complete one concrete
+  real-world task. Imperative procedures are normally how-to guides.
+- reference: lookup material such as fields, options, settings, permissions,
+  tokens, requirements, commands, statuses, APIs, tables, or exhaustive lists.
+- explanation: concepts, architecture, background, relationships, rationale,
+  lifecycle, planning, or trade-offs. "What is ...?" pages are normally explanations.
+- Never default to reference merely because a page is not numbered.
+- Classify every split output independently. When a long source contains
+  substantial self-contained material with genuinely different purposes, split
+  it; do not split short fragments or create placeholder pages.
+
 Split a source page only when it contains substantial material serving different
 reader needs. Use exactly this marker between complete pages:
 
@@ -1672,6 +1771,12 @@ Metadata guidance:
 - Use a stable task or feature topic, not a book name.
 - Use subtopic for the semantic group inside the topic.
 - Use audiences as metadata, never as the page's exclusive location.
+- Use only these audience ids: decision-maker, civicrm-user,
+  functional-administrator, data-and-reporting-specialist, system-administrator,
+  implementer, developer, documentation-contributor.
+- Assign one primary audience and at most one secondary audience. Product jobs
+  such as event manager, fundraiser, campaign organiser, or mailing author are
+  topics/subtopics, not new audience ids.
 - Use extensions only when the source explicitly identifies an extension.
 - Use related only for source paths or valid links explicitly supported by the
   source; never invent a target.
@@ -1907,15 +2012,59 @@ def infer_topic(guide: GuideConfig, relative_path: str, title: str, metadata: Di
 
 
 def infer_category(metadata: Dict[str, Any], body: str) -> str:
-    value = str(metadata.get("category", "")).strip().casefold()
-    if not value:
+    """Infer one Diátaxis category from purpose, title and page structure."""
+    explicit = canonical_category(metadata.get("category"))
+    if not explicit:
         values = normalise_list(metadata.get("categories"))
-        value = values[0].casefold() if values else ""
-    value = {"guide": "how-to", "howto": "how-to", "how-to guide": "how-to"}.get(value, value)
-    if value in ALLOWED_CATEGORIES:
-        return value
-    return "how-to" if re.search(r"(?mi)^\s*\d+[.)]\s+", body) else "reference"
+        explicit = canonical_category(values[0]) if values else ""
+    if explicit:
+        return explicit
 
+    title = str(metadata.get("title", "")).strip()
+    if not title:
+        title = markdown_title(body, "")
+    title_text = title.casefold()
+    text = f"{title}\n{body[:12000]}".casefold()
+
+    if re.search(r"\b(tutorial|walkthrough|worked example|quick start|getting started|first steps)\b", title_text):
+        return "tutorial"
+    if title_text.startswith(("example ", "create your first ", "build your first ")):
+        return "tutorial"
+
+    if title_text.startswith(("what is ", "why ", "understanding ")):
+        return "explanation"
+    if re.search(r"\b(concepts?|architecture|overview|background|how .+ works?|planning|lifecycle|trade-offs?)\b", title_text):
+        return "explanation"
+
+    task_verbs = (
+        "add", "allow", "archive", "backup", "build", "cancel", "change",
+        "configure", "connect", "create", "customize", "define", "delete",
+        "display", "edit", "enable", "export", "find", "handle", "import",
+        "install", "integrate", "manage", "migrate", "move", "optimize",
+        "override", "plan", "publish", "record", "renew", "run", "send",
+        "set up", "switch", "sync", "translate", "troubleshoot", "update",
+        "upgrade", "use", "view",
+    )
+    ordered_steps = len(re.findall(r"(?m)^\s*\d+[.)]\s+", body))
+    procedural_headings = len(re.findall(
+        r"(?mi)^#{2,6}\s+(before you begin|prerequisites?|procedure|steps?|to .+|how to .+)",
+        body,
+    ))
+    if title_text.startswith(task_verbs) or ordered_steps >= 2 or procedural_headings:
+        return "how-to"
+
+    if re.search(r"\b(reference|glossary|requirements?|permissions?|fields?|options?|settings?|tokens?|commands?|api|schema|status|statuses)\b", title_text):
+        return "reference"
+    if len(re.findall(r"(?m)^\|.+\|\s*$", body)) >= 3:
+        return "reference"
+    if re.search(r"(?mi)^#{2,6}\s+(available|supported|values?|parameters?|configuration options|reference)", body):
+        return "reference"
+
+    if re.search(r"\b(example|scenario|exercise|learn to|follow along)\b", text):
+        return "tutorial"
+    if re.search(r"\b(because|concept|means that|in contrast|relationship between)\b", text):
+        return "explanation"
+    return "reference"
 
 def infer_journey_stage(title: str, category: str, relative_path: str, metadata: Dict[str, Any]) -> str:
     supplied = slugify(str(metadata.get("journey_stage", metadata.get("journey", ""))))
@@ -1990,9 +2139,10 @@ def normalise_metadata(
         parent = PurePosixPath(source_path).parent.name
         subtopic = slugify(parent) if parent and parent != "." else topic
     component = str(metadata.get("component", "")).strip() or COMPONENT_BY_TOPIC.get(topic, "CiviCRM Core")
-    audiences = [slugify(value) for value in normalise_list(metadata.get("audiences", metadata.get("audience")))]
-    if not audiences:
-        audiences = ["system-administrator"] if guide.key in {"installation", "sysadmin"} else ["civicrm-user"]
+    audiences = normalise_audiences(
+        metadata.get("audiences", metadata.get("audience")),
+        guide,
+    )
     level = str(metadata.get("level", "basic")).strip().casefold()
     if level not in ALLOWED_LEVELS:
         level = "basic"
@@ -2600,63 +2750,53 @@ def page_inventory(docs_root: Path, official_navs: Dict[str, Any]) -> List[Dict[
 
 
 NAVIGATION_PROMPT = r"""
-You are reorganising a unified CiviCRM documentation site. You receive a page
-inventory. Each page has an immutable opaque id and an informational
-`destination_path`.
+You are the information architect for a unified CiviCRM documentation site.
+You receive a complete page inventory. Each page has an immutable opaque id and
+an informational destination_path.
 
-OUTPUT FORMAT
-Return JSON only, as {"nav": [...]}. Use only these nodes:
+OUTPUT
+Return JSON only as {"nav": [...]}. Use only:
 - section: {"title": "...", "children": [...]}
 - page: {"page_id": "p00001"}
 
-IMMUTABLE PAGE IDENTITIES
-- Copy page_id character for character from the inventory.
+NON-NEGOTIABLE INTEGRITY
 - Use every page_id exactly once.
-- Never output, reconstruct, rename, relocate, duplicate, or omit a path.
-- Never use a path in place of page_id.
-- The build script resolves page_id to the exact existing path after validation.
-- Navigation placement is conceptual and does not change physical files or URLs.
+- Copy page_id exactly; never emit paths and never invent, omit or duplicate ids.
+- Navigation placement does not change files or URLs.
 
-PRIMARY NAVIGATION
-- Keep the root task- and feature-oriented. Do not create a generic User Guide
-  wrapper and do not use Diátaxis categories or audiences as primary branches.
-- Use at most six functional root sections; the build adds Browse as a seventh.
-- A section may have no more than seven direct choices. If it would have more,
-  create another meaningful semantic subgroup; never use alphabetical buckets.
-- Aim for five to seven direct choices when content supports it.
-- Prefer two or three navigation levels; a fourth is allowed for a large topic.
+SHALLOW INFORMATION ARCHITECTURE
+- Use at most six root choices; Browse is added later.
+- Use no more than eighteen direct choices in a section.
+- Prefer root -> functional topic -> page.
+- Add one semantic subgroup only when a topic has enough pages to justify it.
+- Never create a section for one page. Every section must have at least two children.
+- Never require opening more than three section levels before reaching a page.
+- Do not create wrapper levels named User guide, More, Start and use, Review and
+  extend, Plan and configure 2, or similar mechanical buckets.
+- Do not use alphabetical buckets.
 
-CONSISTENT EDITORIAL GRAMMAR
-Within each major functional topic, organise content in the following journey
-order, but include only groups justified by the pages:
-1. Overview
-2. Plan and configure
-3. Everyday tasks
-4. Manage and automate
-5. Reports and review
-6. Reference and troubleshooting
-7. Extensions and integrations
+EDITORIAL STRUCTURE
+- Organise first by reader intent and functional feature: contacts and data,
+  communication, fundraising and engagement, search and reporting, and
+  administration/extension.
+- Within a large topic, derive precise task-oriented labels from the actual
+  pages, for example Set up events, Registration and participants, Payments,
+  Reports, or Troubleshooting.
+- Use journey_stage only as evidence for ordering; do not force all journey
+  stages into the navigation.
+- Use category (tutorial, how-to, reference, explanation) as a secondary signal,
+  not as a primary navigation branch.
+- Audiences are metadata and must never create primary navigation branches.
+- Put a component entry page such as "What is CiviEvent?" first in its topic,
+  directly if possible; do not wrap it in a one-page Overview section.
+- Preserve a practical order: orientation, setup, common tasks, management,
+  reporting, reference/troubleshooting, extensions.
 
-Do not force all seven groups. A small topic may have three. Use more precise,
-task-oriented subgroup labels where they better describe the actual workflow.
-For example, Events may use Plan and configure, Publish and promote, Manage
-participants, Reports and follow-up, and Extensions and integrations.
-
-COMPONENT ENTRY PAGES
-- A page titled "What is CiviX?" is the entry page for that component.
-- Keep its title and place it first, either directly under the topic or in
-  Overview. Its URL remains unchanged because page_id resolution is immutable.
-
-ORDERING
-- Follow the user's real journey: orientation and prerequisites, common tasks,
-  management and automation, review, reference, troubleshooting, extensions.
-- Preserve current_order and current_breadcrumbs when useful, but do not retain
-  an alphabetical structure merely because it exists.
-- Keep installation and system administration discoverable without making the
-  entire site role-oriented.
+QUALITY CHECK BEFORE OUTPUT
+- Flatten every section with a single child.
+- Check that each page is reachable without opening empty or redundant levels.
+- Check all page ids exactly once, then return JSON only.
 """.strip()
-
-
 def plan_id_entries(plan: Any) -> List[str]:
     found: List[str] = []
     if isinstance(plan, list):
@@ -2670,60 +2810,26 @@ def plan_id_entries(plan: Any) -> List[str]:
     return found
 
 
-def normalise_navigation_titles(
-    node: Any,
-    fallback_title: str = "Other pages",
-) -> Any:
-    """Normalise section titles while preserving page nodes."""
-
+def normalise_navigation_titles(node: Any, fallback_title: str = "Other pages") -> Any:
+    """Normalise section titles without adding keys to page_id nodes."""
     if isinstance(node, list):
-        return [
-            normalise_navigation_titles(
-                item,
-                fallback_title,
-            )
-            for item in node
-            if item is not None
-        ]
-
+        return [normalise_navigation_titles(item, fallback_title) for item in node if item is not None]
     if not isinstance(node, dict):
         return node
-
-    # A page node must contain only page_id.
     if set(node) == {"page_id"}:
-        return {
-            "page_id": str(node["page_id"]).strip(),
-        }
+        return {"page_id": str(node.get("page_id", "")).strip()}
+    children = node.get("children", [])
+    title = str(node.get("title", "")).strip() or fallback_title
+    return {
+        "title": title,
+        "children": normalise_navigation_titles(children, fallback_title),
+    }
 
-    if set(node) == {"title", "children"}:
-        title = str(node.get("title", "")).strip()
-
-        if not title:
-            title = fallback_title
-
-        children = node.get("children", [])
-
-        if isinstance(children, list):
-            children = [
-                normalise_navigation_titles(
-                    child,
-                    fallback_title,
-                )
-                for child in children
-                if child is not None
-            ]
-
-        return {
-            "title": title,
-            "children": children,
-        }
-
-    # Preserve malformed nodes for explicit validation.
-    return node
-    
 def validate_navigation_plan(plan: Any, expected_ids: List[str], depth: int = 0) -> None:
-    if depth > 6:
-        raise RuntimeError("Invalid navigation plan: more than six navigation levels.")
+    if depth > MAX_NAV_DEPTH:
+        raise RuntimeError(
+            f"Invalid navigation plan: more than {MAX_NAV_DEPTH} section levels before a page."
+        )
     if not isinstance(plan, list):
         raise RuntimeError("Invalid navigation plan: nav must be an array.")
     for node in plan:
@@ -2738,8 +2844,10 @@ def validate_navigation_plan(plan: Any, expected_ids: List[str], depth: int = 0)
             children = node["children"]
             if not title:
                 raise RuntimeError("Invalid navigation plan: section title is empty.")
-            if not isinstance(children, list) or not children:
-                raise RuntimeError(f"Invalid navigation plan: section {title!r} is empty.")
+            if not isinstance(children, list) or len(children) < 2:
+                raise RuntimeError(
+                    f"Invalid navigation plan: section {title!r} must contain at least two choices."
+                )
             if len(children) > MAX_NAV_CHOICES:
                 raise RuntimeError(
                     f"Invalid navigation plan: section {title!r} has {len(children)} direct choices; "
@@ -2769,7 +2877,6 @@ def validate_navigation_plan(plan: Any, expected_ids: List[str], depth: int = 0)
                 f"Invalid navigation plan: root has {len(plan)} choices; "
                 f"the maximum is {MAX_MAIN_ROOT_CHOICES} before Browse is added."
             )
-
 
 def resolve_navigation_plan(plan: List[Any], inventory: List[Dict[str, Any]]) -> List[Any]:
     by_id = {item["id"]: item for item in inventory}
@@ -2903,60 +3010,60 @@ def bounded_navigation_children(
     return groups
 
 def deterministic_navigation_plan(inventory: List[Dict[str, Any]]) -> List[Any]:
+    """Build a shallow fallback: domain -> topic -> optional stage -> page."""
     by_domain: Dict[str, Dict[str, List[Dict[str, Any]]]] = defaultdict(lambda: defaultdict(list))
     for page in inventory:
         if page["destination_path"] == "index.md":
             continue
-        topic = page.get("topic", "general")
-        by_domain[TOPIC_DOMAIN.get(topic, "Configure, automate and extend")][topic].append(page)
+        topic = str(page.get("topic", "general"))
+        domain = TOPIC_DOMAIN.get(topic, "Configure, automate and extend")
+        by_domain[domain][topic].append(page)
+
     roots: List[Any] = []
     home = next((page for page in inventory if page["destination_path"] == "index.md"), None)
     if home:
         roots.append({"page_id": home["id"]})
+
     for domain in DOMAIN_ORDER:
         topics = by_domain.get(domain, {})
         if not topics:
             continue
         topic_nodes: List[Any] = []
         for topic in sorted(topics, key=topic_sort_key):
-            pages = topics[topic]
-            by_stage: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
-            for page in pages:
-                by_stage[page.get("journey_stage", "everyday-tasks")].append(page)
-            children: List[Any] = []
-            for stage, label in STAGE_LABELS.items():
-                stage_pages = by_stage.get(stage, [])
-                if not stage_pages:
-                    continue
-                if stage == "overview" and len(stage_pages) == 1:
-                    children.append({"page_id": stage_pages[0]["id"]})
-                else:
-                    children.extend(split_page_nodes(stage_pages, label))
-            if len(children) > MAX_NAV_CHOICES:
-                chunks = [children[index:index + MAX_NAV_CHOICES] for index in range(0, len(children), MAX_NAV_CHOICES)]
-                children = [
-                    {
-                        "title": "Start and use" if index == 0 else "Review and extend",
-                        "children": chunk,
-                    }
-                    for index, chunk in enumerate(chunks)
-                ]
+            pages = sorted(
+                topics[topic],
+                key=lambda item: (
+                    STAGE_ORDER.get(str(item.get("journey_stage", "")), 99),
+                    item["current_order"],
+                ),
+            )
+            if len(pages) <= MAX_NAV_CHOICES:
+                children: List[Any] = [{"page_id": page["id"]} for page in pages]
+            else:
+                children = []
+                by_stage: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+                for page in pages:
+                    by_stage[str(page.get("journey_stage", "everyday-tasks"))].append(page)
+                for stage, label in STAGE_LABELS.items():
+                    stage_pages = by_stage.get(stage, [])
+                    if not stage_pages:
+                        continue
+                    if len(stage_pages) == 1:
+                        children.append({"page_id": stage_pages[0]["id"]})
+                        continue
+                    for offset in range(0, len(stage_pages), MAX_NAV_CHOICES):
+                        chunk = stage_pages[offset:offset + MAX_NAV_CHOICES]
+                        chunk_label = label if offset == 0 else f"{label} — continued"
+                        children.append({
+                            "title": chunk_label,
+                            "children": [{"page_id": page["id"]} for page in chunk],
+                        })
             topic_nodes.append({"title": topic_label(topic), "children": children})
-        domain_children = bounded_navigation_children(
-            topic_nodes,
-            domain,
-        )
-        roots.append(
-            {
-                "title": domain,
-                "children": domain_children,
-            }
-        )
-    if len(roots) > MAX_MAIN_ROOT_CHOICES:
-        overflow = roots[MAX_MAIN_ROOT_CHOICES - 1:]
-        roots = roots[:MAX_MAIN_ROOT_CHOICES - 1] + [{"title": "More CiviCRM topics", "children": overflow}]
-    return roots
+        roots.append({"title": domain, "children": topic_nodes})
 
+    roots = normalise_navigation_titles(roots)
+    roots = collapse_single_child_sections(roots)
+    return roots
 
 def build_global_navigation(
     paths: Paths,
@@ -2982,6 +3089,8 @@ def build_global_navigation(
     cached_plan = cache.get("plan") if cache.get("sha256") == digest else None
     if isinstance(cached_plan, list) and not refresh:
         try:
+            cached_plan = normalise_navigation_titles(cached_plan)
+            cached_plan = collapse_single_child_sections(cached_plan)
             validate_navigation_plan(cached_plan, expected_ids)
             print("Reusing the validated navigation plan from navigation-manifest.json.")
             return resolve_navigation_plan(cached_plan, inventory)
@@ -2989,50 +3098,57 @@ def build_global_navigation(
             print(f"Ignoring an invalid cached navigation plan: {exc}")
 
     fallback_plan = deterministic_navigation_plan(inventory)
+    fallback_plan = collapse_single_child_sections(fallback_plan)
     validate_navigation_plan(fallback_plan, expected_ids)
     plan = fallback_plan
     source = "deterministic"
+
     if request_ai:
-        prompt = NAVIGATION_PROMPT + "\n\nPAGE INVENTORY:\n" + json.dumps(
-            inventory, ensure_ascii=False, indent=2
+        base_prompt = (
+            NAVIGATION_PROMPT
+            + "\n\nPAGE INVENTORY:\n"
+            + json.dumps(inventory, ensure_ascii=False, indent=2)
         )
-        try:
-            raw = ai_request(prompt, provider, model, preset, retries, json_response=True)
-            payload = json.loads(raw)
-            proposed = payload.get("nav")
-            validate_navigation_plan(proposed, expected_ids)
-            plan = proposed
-            source = "ai"
-        except (RuntimeError, json.JSONDecodeError) as exc:
-            print(f"AI navigation was rejected; using deterministic navigation: {exc}")
+        correction = ""
+        for attempt in range(1, 4):
+            try:
+                raw = ai_request(
+                    base_prompt + correction,
+                    provider,
+                    model,
+                    preset,
+                    retries,
+                    json_response=True,
+                )
+                payload = json.loads(raw)
+                proposed = normalise_navigation_titles(payload.get("nav"))
+                proposed = collapse_single_child_sections(proposed)
+                validate_navigation_plan(proposed, expected_ids)
+                plan = proposed
+                source = "ai"
+                break
+            except (RuntimeError, json.JSONDecodeError) as exc:
+                print(f"AI navigation attempt {attempt}/3 rejected: {exc}")
+                correction = (
+                    "\n\nCORRECTION REQUIRED\n"
+                    f"The previous plan failed validation: {exc}\n"
+                    "Return the complete corrected JSON plan. Keep every page id exactly once, "
+                    "flatten singleton sections, and respect the depth and choice limits."
+                )
+        else:
+            print("AI navigation was rejected after 3 attempts; using the shallow deterministic fallback.")
             source = "deterministic-fallback"
-    plan = collapse_single_child_sections(plan)
+
     plan = normalise_navigation_titles(plan)
-
-    actual_ids = plan_id_entries(plan)
-
+    plan = collapse_single_child_sections(plan)
     validate_navigation_plan(plan, expected_ids)
-
-    save_json(
-        cache_path,
-        {
-            "sha256": digest,
-            "plan": plan,
-            "source": source,
-            "id_to_path": {
-                item["id"]: item["destination_path"]
-                for item in inventory
-            },
-        },
-    )
-
-    resolved = resolve_navigation_plan(plan, inventory)
-    resolved = enforce_navigation_depth_limit(
-        resolved,
-        max_depth=5,
-    )
-
-    return resolved
+    save_json(cache_path, {
+        "sha256": digest,
+        "plan": plan,
+        "source": source,
+        "id_to_path": {item["id"]: item["destination_path"] for item in inventory},
+    })
+    return resolve_navigation_plan(plan, inventory)
 
 def relative_link(from_path: str, to_path: str) -> str:
     directory = posixpath.dirname(from_path) or "."
@@ -3066,55 +3182,59 @@ def write_generated_index(
     target_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
 
 
-def generate_browse_indexes(docs_root: Path, inventory: List[Dict[str, Any]]) -> Tuple[List[Any], List[Any]]:
+def generate_browse_indexes(
+    docs_root: Path,
+    inventory: List[Dict[str, Any]],
+) -> Tuple[List[Any], List[Any]]:
     browse_root = docs_root / BROWSE_DIR
     safe_rmtree(browse_root)
     browse_root.mkdir(parents=True, exist_ok=True)
+
     category_nav: List[Any] = []
     for category, label in CATEGORY_LABELS.items():
         pages = [page for page in inventory if page.get("category") == category]
         groups: List[Tuple[str, List[Dict[str, Any]]]] = []
         if category == "tutorial":
             for level in ("basic", "intermediate", "advanced"):
-                groups.append((level.title(), sorted(
-                    [page for page in pages if page.get("level") == level],
-                    key=lambda item: item["current_order"],
-                )))
-        elif category == "how-to":
+                group = [page for page in pages if page.get("level") == level]
+                if group:
+                    groups.append((level.title(), sorted(group, key=lambda item: item["current_order"])))
+        else:
             for topic in sorted({page["topic"] for page in pages}, key=topic_sort_key):
                 group = [page for page in pages if page["topic"] == topic]
                 groups.append((topic_label(topic), sorted(
                     group,
-                    key=lambda item: (STAGE_ORDER.get(item["journey_stage"], 99), item["current_order"]),
+                    key=lambda item: (
+                        STAGE_ORDER.get(str(item.get("journey_stage", "")), 99),
+                        item["current_order"],
+                    ),
                 )))
-        elif category == "reference":
-            for component in sorted({page["component"] for page in pages}, key=str.casefold):
-                group = [page for page in pages if page["component"] == component]
-                groups.append((component, sorted(group, key=lambda item: item["current_order"])))
-        else:
-            for topic in sorted({page["topic"] for page in pages}, key=topic_sort_key):
-                group = [page for page in pages if page["topic"] == topic]
-                groups.append((topic_label(topic), sorted(group, key=lambda item: item["current_order"])))
         relative = f"{BROWSE_DIR}/categories/{category}.md"
         write_generated_index(
-            docs_root, relative, label,
-            "Browse pages organised for this type of documentation need.", groups,
+            docs_root,
+            relative,
+            label,
+            "Browse pages organised for this type of documentation need.",
+            groups,
         )
         category_nav.append({label: relative})
 
     audience_nav: List[Any] = []
-    audiences = sorted({audience for page in inventory for audience in page.get("audiences", [])})
-    for audience in audiences:
+    for audience, label in AUDIENCE_LABELS.items():
         pages = [page for page in inventory if audience in page.get("audiences", [])]
-        groups = []
+        if not pages:
+            continue
+        groups: List[Tuple[str, List[Dict[str, Any]]]] = []
         for topic in sorted({page["topic"] for page in pages}, key=topic_sort_key):
             group = [page for page in pages if page["topic"] == topic]
             groups.append((topic_label(topic), sorted(group, key=lambda item: item["current_order"])))
         relative = f"{BROWSE_DIR}/audiences/{audience}.md"
-        label = audience.replace("-", " ").title()
         write_generated_index(
-            docs_root, relative, label,
-            "Pages relevant to this audience, grouped by functional topic.", groups,
+            docs_root,
+            relative,
+            label,
+            "Pages relevant to this audience, grouped by functional topic.",
+            groups,
         )
         audience_nav.append({label: relative})
     return category_nav, audience_nav
