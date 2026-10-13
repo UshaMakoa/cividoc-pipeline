@@ -1,0 +1,158 @@
+# Documentation audit
+
+Pages audited: 324
+
+AI rewrites rejected for fidelity: 18
+
+## Topic compliance
+
+- **Contacts**: 7 pages — Review: no overview page
+- **Activities**: 3 pages — Review: no overview page
+- **Groups and tags**: 6 pages — OK
+- **Data management**: 8 pages — Review: no overview page
+- **Mailings**: 18 pages — OK
+- **Campaigns**: 17 pages — OK
+- **Contributions**: 25 pages — OK
+- **Events**: 16 pages — OK
+- **Memberships**: 16 pages — OK
+- **Cases**: 7 pages — OK
+- **Grants**: 5 pages — OK
+- **Pledges**: 5 pages — OK
+- **Search**: 14 pages — Review: no overview page
+- **Reporting**: 9 pages — OK
+- **SearchKit**: 13 pages — OK
+- **Forms**: 4 pages — OK
+- **Configuration**: 2 pages — Review: no overview page
+- **Permissions**: 4 pages — OK
+- **Custom data**: 5 pages — OK
+- **Installation**: 23 pages — OK
+- **System administration**: 84 pages — OK
+- **Extensions**: 4 pages — OK
+- **Troubleshooting**: 2 pages — Review: no overview page
+- **General**: 27 pages — OK
+
+## Pages needing review
+
+- `appendices/glossary.md` — review priority: medium
+- `campaign/everyday-tasks.md` — review priority: medium
+- `campaign/set-up.md` — review priority: medium
+- `case-management/reports-and-analysis.md` — review priority: medium
+- `case-management/set-up.md` — review priority: medium
+- `common-workflows/deduping-and-merging.md` — review priority: medium
+- `common-workflows/importing-data-into-civicrm-part2.md` — review priority: medium
+- `common-workflows/importing-data-into-civicrm-part3.md` — review priority: medium
+- `common-workflows/importing-data-into-civicrm.md` — review priority: medium
+- `common-workflows/postal-mail-communications.md` — review priority: medium
+- `contributions/contribution-forms.md` — review priority: medium
+- `contributions/contribution-pages.md` — review priority: medium
+- `contributions/key-concepts-and-configurations.md` — review priority: medium
+- `contributions/offline-fundraising.md` — review priority: medium
+- `contributions/payment-processors-part2.md` — review priority: medium
+- `contributions/payment-processors.md` — review priority: medium
+- `email/everyday-tasks.md` — review priority: medium
+- `email/maintaining-healthy-email-lists-part2.md` — review priority: medium
+- `email/message-templates-part2.md` — review priority: medium
+- `email/message-templates-part3.md` — review priority: medium
+- `email/set-up-part2.md` — review priority: medium
+- `email/set-up.md` — review priority: high
+- `email/what-you-need-to-know.md` — review priority: medium
+- `events/complex-event-fees.md` — review priority: medium
+- `events/creating-an-event.md` — review priority: medium
+- `events/online-event-registration.md` — review priority: medium
+- `events/reports.md` — review priority: medium
+- `grants/what-is-civigrant.md` — review priority: medium
+- `initial-set-up/customizing-the-user-interface.md` — review priority: medium
+- `initial-set-up/installation-and-basic-set-up-part2.md` — review priority: medium
+- `initial-set-up/scheduled-jobs.md` — review priority: medium
+- `installation/archive/drupal7.md` — review priority: high
+- `installation/backdrop/index.md` — review priority: medium
+- `installation/drupal/index.md` — review priority: medium
+- `installation/general/cli-cv.md` — review priority: medium
+- `installation/general/unicode_pdf.md` — review priority: medium
+- `installation/joomla/index.md` — review priority: medium
+- `installation/multisite/drupal.md` — review priority: high
+- `installation/planning/cms.md` — review priority: medium
+- `installation/planning/hosting.md` — review priority: medium
+- `installation/planning/index.md` — review priority: medium
+- `installation/requirements/index.md` — review priority: medium
+- `installation/standalone/index.md` — review priority: medium
+- `installation/wordpress/index.md` — review priority: medium
+- `introduction/real-world-examples.md` — review priority: medium
+- `introduction/what-is-civicrm.md` — review priority: medium
+- `introduction/who-is-civicrm.md` — review priority: medium
+- `membership/cancelling-and-expiring-memberships.md` — review priority: medium
+- `membership/finding-and-viewing-memberships.md` — review priority: medium
+- `membership/membership-price-sets.md` — review priority: medium
+- `membership/online-membership-sign-up.md` — review priority: medium
+- `membership/renewals.md` — review priority: medium
+- `organising-your-data/groups-and-tags-part2.md` — review priority: medium
+- `organising-your-data/groups-and-tags-part3.md` — review priority: medium
+- `organising-your-data/groups-and-tags.md` — review priority: medium
+- `organising-your-data/profiles-part2.md` — review priority: medium
+- `organising-your-data/relationships-part2.md` — review priority: high
+- `pledges/everyday-tasks.md` — review priority: medium
+- `reporting/set-up.md` — review priority: medium
+- `reporting/what-you-need-to-know.md` — review priority: medium
+- `searching/searching-part2.md` — review priority: medium
+- `searching/searching.md` — review priority: medium
+- `searching/searchkit/search_for.md` — review priority: medium
+- `searching/searchkit/soft-credit-example.md` — review priority: medium
+- `searching/searchkit/what-is-searchkit.md` — review priority: medium
+- `sms-text-messaging/everyday-tasks.md` — review priority: medium
+- `survey/reports-and-analysis.md` — review priority: medium
+- `survey/set-up.md` — review priority: medium
+- `survey/what-you-need-to-know.md` — review priority: high
+- `sysadmin/customize/extensions-part3.md` — review priority: medium
+- `sysadmin/customize/paths.md` — review priority: high
+- `sysadmin/integration/backdrop/index-part3.md` — review priority: medium
+- `sysadmin/integration/drupal/bootstrap-css.md` — review priority: medium
+- `sysadmin/integration/drupal/index-part3.md` — review priority: medium
+- `sysadmin/integration/drupal/index-part4.md` — review priority: medium
+- `sysadmin/integration/drupal/mailhandler.md` — review priority: high
+- `sysadmin/integration/drupal/views.md` — review priority: medium
+- `sysadmin/integration/joomla/dashboard.md` — review priority: medium
+- `sysadmin/integration/joomla/index-part2.md` — review priority: medium
+- `sysadmin/integration/wordpress/clean-urls.md` — review priority: medium
+- `sysadmin/integration/wordpress/plugins.md` — review priority: medium
+- `sysadmin/misc/behind-a-firewall.md` — review priority: medium
+- `sysadmin/misc/staging-production.md` — review priority: medium
+- `sysadmin/misc/switch-smarty.md` — review priority: medium
+- `sysadmin/setup/cache.md` — review priority: medium
+- `sysadmin/setup/civimail/deliverability.md` — review priority: medium
+- `sysadmin/setup/civimail/inbound-part2.md` — review priority: high
+- `sysadmin/setup/civimail/index.md` — review priority: medium
+- `sysadmin/setup/civimail/outbound.md` — review priority: high
+- `sysadmin/setup/directories-part2.md` — review priority: medium
+- `sysadmin/setup/directories.md` — review priority: medium
+- `sysadmin/setup/index.md` — review priority: medium
+- `sysadmin/setup/logging-part2.md` — review priority: medium
+- `sysadmin/setup/multisite-part3.md` — review priority: medium
+- `sysadmin/setup/multisite.md` — review priority: medium
+- `sysadmin/setup/oauth.md` — review priority: high
+- `sysadmin/setup/optimizations.md` — review priority: medium
+- `sysadmin/setup/payment-processors/authorize-net-part2.md` — review priority: medium
+- `sysadmin/setup/payment-processors/authorize-net.md` — review priority: medium
+- `sysadmin/setup/payment-processors/card-access.md` — review priority: medium
+- `sysadmin/setup/payment-processors/first-data.md` — review priority: medium
+- `sysadmin/setup/payment-processors/index.md` — review priority: medium
+- `sysadmin/setup/payment-processors/moneris.md` — review priority: medium
+- `sysadmin/setup/payment-processors/payflow.md` — review priority: high
+- `sysadmin/setup/payment-processors/payjunction.md` — review priority: medium
+- `sysadmin/setup/payment-processors/paypal-pro-part3.md` — review priority: medium
+- `sysadmin/setup/payment-processors/paypal-pro-part4.md` — review priority: high
+- `sysadmin/setup/payment-processors/paypal-pro.md` — review priority: medium
+- `sysadmin/setup/payment-processors/paypal-standard.md` — review priority: medium
+- `sysadmin/setup/security-part3.md` — review priority: medium
+- `sysadmin/setup/security.md` — review priority: medium
+- `sysadmin/troubleshooting.md` — review priority: high
+- `sysadmin/upgrade/backdrop.md` — review priority: medium
+- `sysadmin/upgrade/drupal7.md` — review priority: medium
+- `sysadmin/upgrade/drupal8.md` — review priority: medium
+- `sysadmin/upgrade/index.md` — review priority: medium
+- `sysadmin/upgrade/version-specific.md` — review priority: high
+- `sysadmin/upgrade/wordpress.md` — review priority: medium
+- `the-civicrm-community/the-civicrm-community.md` — review priority: medium
+- `the-user-interface/formbuilder/example-donation-formbuilder.md` — review priority: medium
+- `the-user-interface/formbuilder/example-event-booking-formbuilder.md` — review priority: medium
+- `the-user-interface/formbuilder/what-is-formbuilder.md` — review priority: medium
+- `translations/translating-formbuilder.md` — review priority: medium
