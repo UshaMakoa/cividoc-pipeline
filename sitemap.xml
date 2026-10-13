@@ -2,1306 +2,1346 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
-         <loc>https://docs.civicrm.org/user/en/latest/appendices/credits-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/audiences/administrator/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/audiences/communications-manager/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/audiences/day-to-day-user/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/audiences/event-manager/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/audiences/fundraising-manager/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/audiences/membership-manager/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/audiences/newcomer/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/audiences/technical/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/categories/explanation/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/categories/how-to/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/categories/reference/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/_browse/categories/tutorial/</loc>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/appendices/credits/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/appendices/free-software/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/appendices/glossary/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/appendices/history-of-this-book/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/campaign/everyday-tasks-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/campaign/everyday-tasks-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/campaign/everyday-tasks/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/campaign/reports-and-analysis/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/campaign/set-up/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/campaign/what-is-civicampaign/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/campaign/what-you-need-to-know/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/case-management/everyday-tasks-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/case-management/everyday-tasks-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/case-management/everyday-tasks-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/case-management/everyday-tasks-part5/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/case-management/everyday-tasks-part6/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/case-management/everyday-tasks-part7/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/case-management/everyday-tasks-part8/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/case-management/everyday-tasks-part9/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/case-management/everyday-tasks/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/case-management/reports-and-analysis-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/case-management/reports-and-analysis/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/case-management/set-up-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/case-management/set-up-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/case-management/set-up-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/case-management/set-up/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/case-management/what-is-civicase/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/case-management/what-you-need-to-know-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/case-management/what-you-need-to-know/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/categories/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/categories/explanation/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/categories/how-to/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/categories/reference/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/categories/tutorial/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/common-workflows/deduping-and-merging-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/common-workflows/deduping-and-merging-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/common-workflows/deduping-and-merging/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/common-workflows/exporting-your-contacts/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/common-workflows/importing-data-into-civicrm-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/common-workflows/importing-data-into-civicrm-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/common-workflows/importing-data-into-civicrm-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/common-workflows/importing-data-into-civicrm/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/common-workflows/postal-mail-communications-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/common-workflows/postal-mail-communications-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/common-workflows/postal-mail-communications/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/common-workflows/tokens-and-mail-merge/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/accounting-integration-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/accounting-integration/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/contribution-forms/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/contribution-pages-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/contribution-pages-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/contribution-pages/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/finding-and-viewing-contributions-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/finding-and-viewing-contributions/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/importing/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/invoicing-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/invoicing/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/key-concepts-and-configurations-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/key-concepts-and-configurations-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/key-concepts-and-configurations/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/manual-entry-of-contributions-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/manual-entry-of-contributions-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/manual-entry-of-contributions-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/manual-entry-of-contributions-part5/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/manual-entry-of-contributions-part6/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/manual-entry-of-contributions/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/manual-receipts-and-thank-yous-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/manual-receipts-and-thank-yous-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/manual-receipts-and-thank-yous/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/offline-fundraising/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/payment-processors-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/payment-processors-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/payment-processors/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/personal-campaign-pages-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/personal-campaign-pages-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/personal-campaign-pages/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/premiums/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/reports-and-analysis/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/sales-tax-and-vat/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/contributions/soft-credits-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/soft-credits/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/what-is-civicontribute/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/contributions/widgets/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/civimail-ab-testing/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/email/everyday-tasks-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/email/everyday-tasks-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/everyday-tasks/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/maintaining-healthy-email-lists-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/maintaining-healthy-email-lists/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/email/mass-mailings-using-civimail-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/email/mass-mailings-using-civimail-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/email/mass-mailings-using-civimail-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/mass-mailings-using-civimail/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/message-templates-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/message-templates-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/email/message-templates-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/message-templates/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/email/reports-and-analysis-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/reports-and-analysis/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/email/scheduled-reminders-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/email/scheduled-reminders-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/scheduled-reminders/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/set-up-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/set-up-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/set-up-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/set-up/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/what-is-civimail/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/email/what-you-need-to-know-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/email/what-you-need-to-know/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/complex-event-fees-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/complex-event-fees/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/creating-an-event-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/creating-an-event-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/creating-an-event-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/creating-an-event/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/custom-data-for-events/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/event-planning-and-management/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/event-templates/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/integrating-events-with-your-website/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/keeping-track-of-events-and-participants-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/keeping-track-of-events-and-participants-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/keeping-track-of-events-and-participants-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/keeping-track-of-events-and-participants/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/manual-event-registration-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/manual-event-registration-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/manual-event-registration-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/manual-event-registration/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/online-event-registration-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/online-event-registration-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/online-event-registration-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/online-event-registration-part5/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/online-event-registration-part6/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/online-event-registration/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/repeating-events/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/events/reports-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/reports/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/events/what-is-civievent/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/grants/every-day-tasks/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/grants/reports-and-analysis/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/grants/set-up/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/grants/what-is-civigrant/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/grants/what-you-need-to-know/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/addresses-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/addresses/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/change-logging/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/customizing-the-user-interface-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/customizing-the-user-interface-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/customizing-the-user-interface-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/customizing-the-user-interface-part5/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/customizing-the-user-interface/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/dates/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/error-handling/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/installation-and-basic-set-up-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/installation-and-basic-set-up-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/installation-and-basic-set-up/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/mapping/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/permissions-and-access-control-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/permissions-and-access-control-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/permissions-and-access-control-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/permissions-and-access-control/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/scheduled-jobs-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/scheduled-jobs-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/scheduled-jobs/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/users-contacts-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/initial-set-up/users-contacts/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/archive/drupal7/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/backdrop/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/drupal/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/general/cli-cv/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/general/i18n_l10n/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/general/mysql_tls/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/general/permissions/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/general/unicode_pdf/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/joomla/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/multisite/drupal/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/multisite/wordpress/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/planning/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/planning/cms/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/planning/demo/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/planning/hosting/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/planning/transition/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/requirements/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/standalone/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/troubleshooting/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/wordpress/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/installation/wordpress/composer/</loc>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/introduction/extensions/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/introduction/is-civicrm-for-you/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/introduction/real-world-examples/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/introduction/what-is-civicrm/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/introduction/who-is-civicrm-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/introduction/who-is-civicrm/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/membership/cancelling-and-expiring-memberships-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/cancelling-and-expiring-memberships/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/defining-memberships-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/defining-memberships/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/membership/finding-and-viewing-memberships-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/finding-and-viewing-memberships/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/making-member-only-websites/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/manual-entry-of-memberships-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/membership/manual-entry-of-memberships-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/membership/manual-entry-of-memberships-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/manual-entry-of-memberships/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/membership-price-sets/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/membership-reports-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/membership-reports-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/membership-reports/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/membership/online-membership-sign-up-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/membership/online-membership-sign-up-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/online-membership-sign-up/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/renewals-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/renewals-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/membership/renewals-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/membership/renewals-part5/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/renewals/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/membership/what-is-civimember/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/activities-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/activities-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/activities-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/activities/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/contacts-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/contacts-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/contacts-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/contacts-part5/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/contacts-part6/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/contacts/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/creating-custom-fields-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/creating-custom-fields-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/creating-custom-fields/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/groups-and-tags/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/mapping-your-data/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/overview/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/profiles-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/profiles-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/profiles-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/profiles-part5/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/profiles-part6/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/profiles-part7/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/profiles-part8/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/profiles/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/relationships-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/relationships-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/relationships-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/relationships-part5/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/relationships-part6/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/relationships/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/smart-groups-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/smart-groups-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/smart-groups-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/organising-your-data/smart-groups/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/petition/everyday-tasks-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/petition/everyday-tasks/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/petition/reports-and-analysis/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/petition/set-up/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/petition/what-is-civipetition/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/petition/what-you-need-to-know/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/pledges/everyday-tasks-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/pledges/everyday-tasks-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/pledges/everyday-tasks/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/pledges/pledges-reports-and-analysis/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/pledges/set-up/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/pledges/what-is-civipledge/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/pledges/what-you-need-to-know-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/pledges/what-you-need-to-know/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/reporting/everyday-tasks/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/reporting/external_reporting/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/reporting/set-up-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/reporting/set-up/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/reporting/what-is-civireport/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/reporting/what-you-need-to-know/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/searching/relative-date-formats-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/relative-date-formats/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/search-result-actions/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searching-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/searching/searching-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/searching/searching-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searching/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/actions/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/connecting-searchkit-to-formbuilder-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/connecting-searchkit-to-formbuilder/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/example-contacts-with-same-type-relationships/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/example-display-employees-participant-records/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/example-donor-members-to-invite/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/example-membership-listing/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/example-upcoming-events/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/expiration_date/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/export-import/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/field_transformations/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/group_by/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/having/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/permissions/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/query_info/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/search-displays/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/search_button/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/search_for/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/soft-credit-example/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/tags/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/what-is-searchkit-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/what-is-searchkit/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/where/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/searching/searchkit/with_without/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/sms-text-messaging/everyday-tasks-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/sms-text-messaging/everyday-tasks/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/sms-text-messaging/reports-and-analysis-sms/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/sms-text-messaging/set-up-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/sms-text-messaging/set-up/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/sms-text-messaging/what-is-sms/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/survey/everyday-tasks-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/survey/everyday-tasks-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/survey/everyday-tasks/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/survey/reports-and-analysis/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/survey/set-up/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/survey/what-is-civisurvey/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/survey/what-is-gotv-voter-tracking/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/survey/what-you-need-to-know/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/troubleshooting/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/customize/extensions-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/customize/extensions-part3/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/customize/extensions/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/customize/paths/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/customize/settings/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/customize/theme/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/backdrop/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/backdrop/index-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/backdrop/index-part3/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/backdrop/views/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/backdrop/webform/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/drupal/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/drupal/bootstrap-css/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/drupal/index-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/drupal/index-part3/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/drupal/index-part4/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/drupal/mailhandler/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/drupal/views/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/drupal/webform/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/drupal/wysiwyg/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/joomla/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/joomla/dashboard/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/joomla/forms/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/joomla/index-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/wordpress/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/wordpress/base-page/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/wordpress/clean-urls/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/wordpress/forms/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/integration/wordpress/plugins/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/misc/behind-a-firewall/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/misc/staging-production/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/misc/switch-servers/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/misc/switch-smarty/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/misc/switching-cms/drupal-to-backdrop/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/misc/switching-cms/drupal-to-wordpress/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/misc/switching-cms/joomla-to-drupal/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/misc/switching-cms/switch-cms/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/api-keys/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/backups/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/cache/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/directories-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/directories/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/index-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/jobs/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/logging-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/logging/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/multisite-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/multisite-part3/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/multisite/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/oauth/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/optimizations/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/secret-keys/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/security-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/security-part3/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/security/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/civimail/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/civimail/deliverability/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/civimail/inbound-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/civimail/inbound/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/civimail/outbound-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/civimail/outbound/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/authorize-net-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/authorize-net/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/card-access/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/first-data/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/iats/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/moneris/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/ogone/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/payflow/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/payjunction/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/paypal-pro-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/paypal-pro-part3/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/paypal-pro-part4/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/paypal-pro/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/paypal-standard/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/setup/payment-processors/recurring/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/upgrade/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/upgrade/backdrop/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/upgrade/drupal7/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/upgrade/drupal8/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/upgrade/index-part2/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/upgrade/joomla/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/upgrade/standalone/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/upgrade/version-specific/</loc>
+         <lastmod>2026-10-13</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.civicrm.org/user/en/latest/sysadmin/upgrade/wordpress/</loc>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-civicrm-community/asking-for-help-in-chat/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-civicrm-community/bug-reporting/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-civicrm-community/contributing-to-this-manual/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/the-civicrm-community/localising-civicrm-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/the-civicrm-community/localising-civicrm-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/the-civicrm-community/localising-civicrm-part4/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-civicrm-community/localising-civicrm/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/the-civicrm-community/the-civicrm-community-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-civicrm-community/the-civicrm-community/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/menu-dashboard-and-dashlets-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/menu-dashboard-and-dashlets-part3/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/menu-dashboard-and-dashlets/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/message-token/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/undelete/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/formbuilder/creating-data-entry-forms/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/formbuilder/example-donation-formbuilder/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/formbuilder/example-event-booking-formbuilder/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/formbuilder/example-membership-formbuilder/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/formbuilder/existing-entity-and-autocomplete/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/formbuilder/pre-filling-custom-forms-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/formbuilder/pre-filling-custom-forms/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/formbuilder/types-of-forms/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/the-user-interface/formbuilder/what-is-formbuilder/</loc>
-         <lastmod>2026-10-07</lastmod>
-    </url>
-    <url>
-         <loc>https://docs.civicrm.org/user/en/latest/translations/localizing-civicrm-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/translations/localizing-civicrm/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/translations/translating-customfields-part2/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/translations/translating-customfields/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/translations/translating-formbuilder/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
     <url>
          <loc>https://docs.civicrm.org/user/en/latest/translations/translating-options/</loc>
-         <lastmod>2026-10-07</lastmod>
+         <lastmod>2026-10-13</lastmod>
     </url>
 </urlset>
