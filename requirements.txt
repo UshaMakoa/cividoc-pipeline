@@ -1,1 +1,16 @@
-PyYAML>=6,<7
+# CiviDoc pipeline — runtime and documentation dependencies
+# Recommended Python version: 3.11 or newer
+
+# Configuration and front matter
+PyYAML>=6.0.2,<7.0
+
+# HTTP access for AI providers and translation services
+requests>=2.32.3,<3.0
+
+# Documentation site
+mkdocs>=1.6.1,<2.0
+mkdocs-material>=9.6,<10.0
+mkdocs-redirects>=1.2.2,<2.0
+
+# Versioned publication on GitHub Pages
+mike>=2.1.3,<3.0
