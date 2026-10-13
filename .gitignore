@@ -1,6 +1,6 @@
 .venv/
 .env
 .cividoc/
-generated-user-en/
+/generated-civicrm-docs/
 __pycache__/
 *.pyc
