@@ -645,3 +645,148 @@ Before returning the result, verify that:
 
 Return JSON only.
 """
+
+INDEX_PAGES_CSS = r"""
+.md-typeset .cividoc-category-list,
+.md-typeset .cividoc-audience-list {
+  margin-block: 1.5rem 2rem;
+}
+
+.md-typeset .cividoc-category-list ul,
+.md-typeset .cividoc-audience-list ul {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, 21rem), 1fr)
+  );
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.md-typeset .cividoc-category-list li,
+.md-typeset .cividoc-audience-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--md-default-fg-color) 14%,
+      transparent
+    );
+  border-radius: 0.5rem;
+  background: var(--md-default-bg-color);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.md-typeset .cividoc-category-list li:hover,
+.md-typeset .cividoc-audience-list li:hover {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--md-accent-fg-color) 45%,
+      transparent
+    );
+  box-shadow: 0 0.3rem 0.9rem rgb(0 0 0 / 8%);
+  transform: translateY(-1px);
+}
+
+.md-typeset .cividoc-category-list li > a,
+.md-typeset .cividoc-audience-list li > a {
+  color: var(--md-typeset-a-color);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.md-typeset .cividoc-category-list li > a:hover,
+.md-typeset .cividoc-audience-list li > a:hover {
+  color: var(--md-accent-fg-color);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.md-typeset .cividoc-category-list li > a:focus-visible,
+.md-typeset .cividoc-audience-list li > a:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 3px;
+  border-radius: 0.2rem;
+}
+
+.md-typeset .cividoc-category-list li > a strong,
+.md-typeset .cividoc-audience-list li > a strong {
+  font-weight: 650;
+}
+
+.md-typeset .cividoc-category-meta {
+  display: block;
+  color: var(--md-default-fg-color--light);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.015em;
+}
+
+.md-typeset .cividoc-category-summary {
+  display: block;
+  color: var(--md-default-fg-color--light);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.md-typeset .cividoc-category-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.7rem;
+  margin-top: auto;
+  padding-top: 0.45rem;
+  color: var(--md-default-fg-color--lighter);
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.md-typeset .cividoc-category-details span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.md-typeset
+.cividoc-category-details
+span + span::before {
+  margin-right: 0.7rem;
+  content: "·";
+}
+
+@media screen and (max-width: 44rem) {
+  .md-typeset .cividoc-category-list ul,
+  .md-typeset .cividoc-audience-list ul {
+    grid-template-columns: 1fr;
+  }
+
+  .md-typeset .cividoc-category-list li,
+  .md-typeset .cividoc-audience-list li {
+    padding: 0.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .cividoc-category-list li,
+  .md-typeset .cividoc-audience-list li {
+    transition: none;
+  }
+
+  .md-typeset .cividoc-category-list li:hover,
+  .md-typeset .cividoc-audience-list li:hover {
+    transform: none;
+  }
+}
+"""

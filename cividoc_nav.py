@@ -9,6 +9,7 @@ import shutil
 from collections import Counter, defaultdict
 from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
+from html import escape
 
 import yaml
 
@@ -27,6 +28,7 @@ from cividoc_content import (
     STAGE_ORDER,
     TOPIC_DOMAIN,
     TOPIC_LABELS,
+    INDEX_PAGES_CSS,
 )
 from cividoc_metadata import (
     markdown_title,
@@ -125,6 +127,33 @@ def accessible_section_label(title: str) -> str:
     return ACCESSIBLE_SECTION_LABELS.get(clean.casefold(), clean)
 
 
+def install_index_page_css(
+    docs_root: Path,
+) -> str:
+    """Install the stylesheet used by generated browse indexes."""
+
+    relative_path = (
+        Path("css")
+        / "cividoc-index-pages.css"
+    )
+
+    destination = (
+        docs_root
+        / relative_path
+    )
+
+    destination.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    destination.write_text(
+        INDEX_PAGES_CSS.strip() + "\n",
+        encoding="utf-8",
+    )
+
+    return relative_path.as_posix()
+
 def iter_markdown(folder: Path) -> Iterable[Path]:
     if folder.exists():
         yield from sorted(folder.rglob("*.md"))
@@ -195,6 +224,217 @@ def collapse_single_child_sections(nodes: List[Dict[str, Any]]) -> List[Dict[str
         )
     return compacted
 
+def page_metadata_value(
+    page: Dict[str, Any],
+    key: str,
+    default: Any = "",
+) -> Any:
+    """Read a value from a flattened or nested inventory page."""
+
+    value = page.get(key)
+
+    if value not in (
+        None,
+        "",
+        [],
+    ):
+        return value
+
+    metadata = page.get("metadata")
+
+    if isinstance(metadata, dict):
+        value = metadata.get(key)
+
+        if value not in (
+            None,
+            "",
+            [],
+        ):
+            return value
+
+    return default
+
+
+def readable_label(
+    value: Any,
+) -> str:
+    """Turn a metadata slug into a readable label."""
+
+    text = str(value or "").strip()
+
+    if not text:
+        return ""
+
+    return (
+        text
+        .replace("_", " ")
+        .replace("-", " ")
+        .strip()
+        .title()
+    )
+
+
+def metadata_list(
+    value: Any,
+) -> List[str]:
+    """Normalise display metadata into unique strings."""
+
+    if value is None:
+        values: List[Any] = []
+    elif isinstance(
+        value,
+        (list, tuple, set),
+    ):
+        values = list(value)
+    else:
+        values = [value]
+
+    return list(
+        dict.fromkeys(
+            str(item).strip()
+            for item in values
+            if str(item).strip()
+        )
+    )
+
+
+def index_card_html(
+    page: Dict[str, Any],
+    link: str,
+) -> List[str]:
+    """Render one category or audience index card."""
+
+    title = escape(
+        str(
+            page_metadata_value(
+                page,
+                "title",
+                "Untitled page",
+            )
+        ).strip()
+    )
+
+    topic = readable_label(
+        page_metadata_value(
+            page,
+            "topic",
+        )
+    )
+
+    component = str(
+        page_metadata_value(
+            page,
+            "component",
+        )
+    ).strip()
+
+    level = readable_label(
+        page_metadata_value(
+            page,
+            "level",
+            "basic",
+        )
+    )
+
+    summary = escape(
+        str(
+            page_metadata_value(
+                page,
+                "summary",
+            )
+        ).strip()
+    )
+
+    versions = metadata_list(
+        page_metadata_value(
+            page,
+            "civicrm_versions",
+            page_metadata_value(
+                page,
+                "civicrm_version",
+            ),
+        )
+    )
+
+    last_modified = str(
+        page_metadata_value(
+            page,
+            "last_modified",
+        )
+    ).strip()
+
+    primary_metadata = list(
+        dict.fromkeys(
+            value
+            for value in (
+                topic,
+                component,
+                level,
+            )
+            if value
+        )
+    )
+
+    detail_items: List[str] = []
+
+    if versions:
+        detail_items.append(
+            "CiviCRM "
+            + ", ".join(
+                escape(version)
+                for version in versions
+            )
+        )
+
+    if last_modified:
+        detail_items.append(
+            "Updated "
+            + escape(last_modified)
+        )
+
+    lines = [
+        "<li>",
+        (
+            f'  <a href="{escape(link, quote=True)}">'
+            f"<strong>{title}</strong>"
+            "</a>"
+        ),
+    ]
+
+    if primary_metadata:
+        lines.append(
+            '  <span class="cividoc-category-meta">'
+            + " · ".join(
+                escape(value)
+                for value in primary_metadata
+            )
+            + "</span>"
+        )
+
+    if summary:
+        lines.append(
+            '  <span class="cividoc-category-summary">'
+            + summary
+            + "</span>"
+        )
+
+    if detail_items:
+        lines.append(
+            '  <span class="cividoc-category-details">'
+        )
+
+        for detail in detail_items:
+            lines.append(
+                f"    <span>{detail}</span>"
+            )
+
+        lines.append(
+            "  </span>"
+        )
+
+    lines.append("</li>")
+
+    return lines
 
 def nav_entries(
     nav: Any,
@@ -664,14 +904,40 @@ def write_generated_index(
     relative_path: str,
     title: str,
     intro: str,
-    groups: List[Tuple[str, List[Dict[str, Any]]]],
+    groups: List[
+        Tuple[
+            str,
+            List[Dict[str, Any]],
+        ]
+    ],
 ) -> None:
-    lines = [
+    """Generate a styled category or audience index."""
+
+    normalised_relative_path = (
+        relative_path
+        .replace("\\", "/")
+        .casefold()
+    )
+
+    is_audience_index = (
+        "/audiences/" in normalised_relative_path
+        or normalised_relative_path.startswith(
+            "_browse/audiences/"
+        )
+    )
+
+    list_class = (
+        "cividoc-audience-list"
+        if is_audience_index
+        else "cividoc-category-list"
+    )
+
+    lines: List[str] = [
         "---",
         f"title: {json.dumps(title)}",
         "generated_index: true",
         "hide:",
-        "- toc",
+        "  - toc",
         "---",
         "",
         f"# {title}",
@@ -679,48 +945,245 @@ def write_generated_index(
         intro,
         "",
     ]
-    page_count = sum(len(pages) for _, pages in groups)
-    lines.extend([f"{page_count} page(s) in this section.", ""])
+
+    page_count = sum(
+        len(pages)
+        for _, pages in groups
+    )
+
+    section_type = (
+        "audience"
+        if is_audience_index
+        else "section"
+    )
+
+    lines.extend([
+        (
+            f"{page_count} page(s) "
+            f"in this {section_type}."
+        ),
+        "",
+    ])
+
+    rendered_group = False
 
     for heading, pages in groups:
         if not pages:
             continue
-        lines.extend([f"## {heading}", ""])
+
+        rendered_group = True
+
+        if heading:
+            lines.extend([
+                f"## {heading}",
+                "",
+            ])
+
+        lines.extend([
+            f'<div class="{list_class}">',
+            "<ul>",
+        ])
+
         for page in pages:
-            target = relative_link(relative_path, page["destination_path"])
-            lines.append(f"- **[{page['title']}]({target})**")
+            raw_destination = str(
+                page.get(
+                    "destination_path",
+                    "",
+                )
+            ).strip()
+
+            target = relative_link(
+                relative_path,
+                raw_destination,
+            )
+
+            page_title = escape(
+                str(
+                    page.get(
+                        "title",
+                        "Untitled page",
+                    )
+                ).strip()
+            )
+
+            safe_target = escape(
+                target,
+                quote=True,
+            )
+
             details: List[str] = []
-            topic = str(page.get("topic", "general")).strip()
+
+            topic = str(
+                page.get(
+                    "topic",
+                    "general",
+                )
+            ).strip()
+
             if topic:
-                details.append(topic_label(topic))
-            component = str(page.get("component", "")).strip()
+                details.append(
+                    topic_label(topic)
+                )
+
+            component = str(
+                page.get(
+                    "component",
+                    "",
+                )
+            ).strip()
+
             if component and (
-                not details or component.casefold() != details[0].casefold()
+                not details
+                or component.casefold()
+                != details[0].casefold()
             ):
                 details.append(component)
-            level = str(page.get("level", "")).strip()
+
+            level = str(
+                page.get(
+                    "level",
+                    "",
+                )
+            ).strip()
+
             if level:
-                details.append(level.replace("-", " ").title())
+                details.append(
+                    level
+                    .replace("-", " ")
+                    .title()
+                )
+
             versions = (
-                normalise_list(page.get("civicrm_versions"))
-                or normalise_list(page.get("civicrm_version"))
+                normalise_list(
+                    page.get(
+                        "civicrm_versions"
+                    )
+                )
+                or normalise_list(
+                    page.get(
+                        "civicrm_version"
+                    )
+                )
             )
-            if versions:
-                details.append("CiviCRM " + ", ".join(versions))
-            last_modified = str(page.get("last_modified", "")).strip()
-            if last_modified:
-                details.append("Updated " + last_modified)
+
+            last_modified = str(
+                page.get(
+                    "last_modified",
+                    "",
+                )
+            ).strip()
+
+            summary = escape(
+                str(
+                    page.get(
+                        "summary",
+                        "",
+                    )
+                ).strip()
+            )
+
+            lines.extend([
+                "<li>",
+                (
+                    f'  <a href="{safe_target}">'
+                    f"<strong>{page_title}</strong>"
+                    "</a>"
+                ),
+            ])
+
             if details:
-                lines.append("  " + " · ".join(details))
-            summary = str(page.get("summary", "")).strip()
+                safe_details = (
+                    " · ".join(
+                        escape(
+                            str(detail)
+                        )
+                        for detail in details
+                        if str(detail).strip()
+                    )
+                )
+
+                if safe_details:
+                    lines.append(
+                        "  "
+                        '<span class="'
+                        'cividoc-category-meta">'
+                        f"{safe_details}"
+                        "</span>"
+                    )
+
             if summary:
-                lines.append("  " + summary)
-        lines.append("")
+                lines.append(
+                    "  "
+                    '<span class="'
+                    'cividoc-category-summary">'
+                    f"{summary}"
+                    "</span>"
+                )
 
-    target_path = docs_root / Path(relative_path)
-    target_path.parent.mkdir(parents=True, exist_ok=True)
-    target_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+            secondary_details: List[str] = []
 
+            if versions:
+                secondary_details.append(
+                    "CiviCRM "
+                    + ", ".join(
+                        escape(
+                            str(version)
+                        )
+                        for version in versions
+                    )
+                )
+
+            if last_modified:
+                secondary_details.append(
+                    "Updated "
+                    + escape(last_modified)
+                )
+
+            if secondary_details:
+                lines.append(
+                    "  "
+                    '<span class="'
+                    'cividoc-category-details">'
+                )
+
+                for detail in secondary_details:
+                    lines.append(
+                        f"    <span>{detail}</span>"
+                    )
+
+                lines.append(
+                    "  </span>"
+                )
+
+            lines.append("</li>")
+
+        lines.extend([
+            "</ul>",
+            "</div>",
+            "",
+        ])
+
+    if not rendered_group:
+        lines.extend([
+            "_No pages are currently available "
+            "in this section._",
+            "",
+        ])
+
+    target_path = (
+        docs_root
+        / Path(relative_path)
+    )
+
+    target_path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    target_path.write_text(
+        "\n".join(lines).rstrip() + "\n",
+        encoding="utf-8",
+    )
 
 def group_label(page: Dict[str, Any]) -> str:
     """Return a stable functional heading for generated browse pages."""
@@ -813,6 +1276,9 @@ def generate_browse_indexes(
     inventory: List[Dict[str, Any]],
 ) -> Tuple[List[Any], List[Any]]:
     """Build category and audience landing pages with topic, level and dates."""
+    install_index_page_css(
+        docs_root,
+    )
     browse_root = docs_root / BROWSE_DIR
     safe_rmtree(browse_root)
     browse_root.mkdir(parents=True, exist_ok=True)
