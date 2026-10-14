@@ -10,7 +10,7 @@ from collections import Counter, defaultdict
 from pathlib import Path, PurePosixPath
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 from html import escape
-
+import posixpath
 import yaml
 
 from cividoc_content import (
@@ -898,6 +898,74 @@ def relative_link(from_path: str, to_path: str) -> str:
     directory = posixpath.dirname(from_path) or "."
     return posixpath.relpath(to_path, directory)
 
+def relative_public_url(
+    source_path: str,
+    destination_path: str,
+) -> str:
+    """Build a relative URL between MkDocs directory-style pages."""
+
+    source = (
+        str(source_path)
+        .replace("\\", "/")
+        .strip()
+        .lstrip("/")
+    )
+
+    destination = (
+        str(destination_path)
+        .replace("\\", "/")
+        .strip()
+        .lstrip("/")
+    )
+
+    if source.startswith("docs/"):
+        source = source[len("docs/"):]
+
+    if destination.startswith("docs/"):
+        destination = destination[len("docs/"):]
+
+    if not destination:
+        return ""
+
+    fragment = ""
+    query = ""
+
+    if "#" in destination:
+        destination, fragment_value = destination.split("#", 1)
+        fragment = f"#{fragment_value}"
+
+    if "?" in destination:
+        destination, query_value = destination.split("?", 1)
+        query = f"?{query_value}"
+
+    def public_directory(path: str) -> tuple[str, bool]:
+        path = path.strip("/")
+
+        if path == "index.md":
+            return "", True
+
+        if path.endswith("/index.md"):
+            return path[:-len("/index.md")], True
+
+        if path.endswith(".md"):
+            return path[:-len(".md")], True
+
+        return path, False
+
+    source_directory, _ = public_directory(source)
+    destination_directory, directory_url = public_directory(destination)
+
+    target = posixpath.relpath(
+        destination_directory or ".",
+        start=source_directory or ".",
+    )
+
+    if target == ".":
+        target = "./"
+    elif directory_url:
+        target = target.rstrip("/") + "/"
+
+    return target + query + fragment
 
 def write_generated_index(
     docs_root: Path,
@@ -992,11 +1060,10 @@ def write_generated_index(
                 )
             ).strip()
 
-            target = relative_link(
+            target = relative_public_url(
                 relative_path,
                 raw_destination,
             )
-
             page_title = escape(
                 str(
                     page.get(
@@ -1082,15 +1149,18 @@ def write_generated_index(
                 ).strip()
             )
 
-            lines.extend([
-                "<li>",
-                (
+            lines.append("<li>")
+
+            if safe_target:
+                lines.append(
                     f'  <a href="{safe_target}">'
                     f"<strong>{page_title}</strong>"
                     "</a>"
-                ),
-            ])
-
+                )
+            else:
+                lines.append(
+                    f"  <strong>{page_title}</strong>"
+                )
             if details:
                 safe_details = (
                     " · ".join(
